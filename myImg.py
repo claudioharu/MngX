@@ -2,6 +2,7 @@
 
 from PySide import QtCore, QtGui
 import ExtendedQLabel
+import teste
 import os
 
 class Ui_Form(QtGui.QMainWindow):
@@ -58,8 +59,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.verticalLayout.setContentsMargins(0, 0, 0, 0)
 		self.verticalLayout.addWidget(self.pushButton)
 		self.verticalLayout.addWidget(self.scrollArea)
-		
-		
+			
 		self.createActions()
 		self.createMenus()
 		
@@ -68,7 +68,6 @@ class Ui_Form(QtGui.QMainWindow):
 		self.retranslateUi(Form)
 
 		QtCore.QMetaObject.connectSlotsByName(Form)
-
 
 	def retranslateUi(self, Form):
 		Form.setWindowTitle(QtGui.QApplication.translate("Form", "Mangax", None, QtGui.QApplication.UnicodeUTF8))
@@ -142,6 +141,11 @@ class Ui_Form(QtGui.QMainWindow):
 			page = self.path + '000.jpg'
 			self.imageLabel.setPixmap(QtGui.QPixmap(page))
 			self.imageLabel.adjustSize()
+	
+	def changes(self):
+		self.window = teste.Ui_Dialog()
+		self.window.show()
+
 		
 	def zoomIn(self):
 		self.scaleImage(1.25)
@@ -159,12 +163,12 @@ class Ui_Form(QtGui.QMainWindow):
 		self.zoomInAct = QtGui.QAction("Zoom &In (25%)", self, shortcut="Ctrl+=", enabled=False, triggered=self.zoomIn)
 		self.zoomOutAct = QtGui.QAction("Zoom &Out (25%)", self,shortcut="Ctrl+-", enabled=False, triggered=self.zoomOut)
 		self.normalSizeAct = QtGui.QAction("&Normal Size", self,shortcut="Ctrl+S", enabled=False, triggered=self.normalSize)
+		self.fitToWindowAct = QtGui.QAction("&Fit to Window", self, enabled=False, checkable=True, shortcut="Ctrl+F", triggered=self.fitToWindow)
 
 		#Pages
 		self.NextPage = QtGui.QAction("Next", self,shortcut="right", enabled=False, triggered=self.nextPage)
 		self.PreviusPage = QtGui.QAction("Previous", self,shortcut="left", enabled=False, triggered=self.previusPage)
-
-		self.fitToWindowAct = QtGui.QAction("&Fit to Window", self, enabled=False, checkable=True, shortcut="Ctrl+F", triggered=self.fitToWindow)
+		self.Changes = QtGui.QAction("Image Settings", self,shortcut="Ctrl+T", enabled=False, triggered=self.changes)
 		 
 		#About Mangax
 		self.aboutAct = QtGui.QAction("&About", self, triggered=self.about)
@@ -181,8 +185,8 @@ class Ui_Form(QtGui.QMainWindow):
 		#OLHAR MAIS TARDE
 		self.NextPage.setEnabled(not self.exitAct.isChecked())
 		self.PreviusPage.setEnabled(not self.exitAct.isChecked())
+		self.Changes.setEnabled(not self.exitAct.isChecked())
 		
-
 	def scaleImage(self, factor):
 		self.zoomInAct.setEnabled(self.scaleFactor < 3.0)
 
@@ -204,7 +208,9 @@ class Ui_Form(QtGui.QMainWindow):
 		self.viewMenu.addSeparator()
 		self.viewMenu.addAction(self.NextPage)
 		self.viewMenu.addAction(self.PreviusPage)
-
+		self.viewMenu.addSeparator()
+		self.viewMenu.addAction(self.Changes)
+		
 		#About Mangax
 		self.helpMenu = QtGui.QMenu("&Help", self)
 		self.helpMenu.addAction(self.aboutAct)

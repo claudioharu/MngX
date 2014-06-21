@@ -9,7 +9,7 @@
 
 from PySide import QtCore, QtGui
 import sys
-import manga
+#import manga
 
 class Ui_Dialog(QtGui.QWidget):
 
@@ -103,8 +103,8 @@ class Ui_Dialog(QtGui.QWidget):
 		self.name = name
 		print(self.name)
 
-if __name__ == '__main__':
-        app = QtGui.QApplication(sys.argv)
-        ex = Ui_Dialog()
-        ex.show()
-        sys.exit(app.exec_())
+# if __name__ == '__main__':
+#        app = QtGui.QApplication(sys.argv)
+#        ex = Ui_Dialog()
+#        ex.show()
+#        sys.exit(app.exec_())
