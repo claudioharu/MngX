@@ -72,6 +72,7 @@ class Ui_Form(QtGui.QMainWindow):
 	def retranslateUi(self, Form):
 		Form.setWindowTitle(QtGui.QApplication.translate("Form", "Mangax", None, QtGui.QApplication.UnicodeUTF8))
 		page = self.path + '000.jpg'
+		self.strPage = page
 		print(page)
 		self.imageLabel.setPixmap(QtGui.QPixmap(page))
 		self.imageLabel.adjustSize()
@@ -85,15 +86,15 @@ class Ui_Form(QtGui.QMainWindow):
 	
 	def nextPage(self):
 
-		#reset verticalscrollbar's position when the page is changed
+		# reset verticalscrollbar's position when the page is changed
 		self.scrollArea.verticalScrollBar().setValue(0)
-		#reset horizontalscrollbar's position when the page is changed
+		# reset horizontalscrollbar's position when the page is changed
 		self.scrollArea.horizontalScrollBar().setValue(0)
 
-		# treatin zoom
+		# handling zoom
 		self.scaleFactor = 1.0
 
-		# treating pages
+		# handling pages
 		self.page += 1		
 		#print self.page
 
@@ -103,8 +104,8 @@ class Ui_Form(QtGui.QMainWindow):
 			page = '0' + str(self.page)
 		elif(self.page >= 100):
 			page = str(self.page)
-				
 		page = self.path + page + '.jpg'
+		self.strPage = page
 		print (page)
 		self.imageLabel.setPixmap(QtGui.QPixmap(page))
 		self.imageLabel.adjustSize()
@@ -113,16 +114,15 @@ class Ui_Form(QtGui.QMainWindow):
 
 		#reset verticalscrollbar's position when the page is changed
 		self.scrollArea.verticalScrollBar().setValue(0)
-		#reset horizontalscrollbar's position when the page is changed
+		# reset horizontalscrollbar's position when the page is changed
 		self.scrollArea.horizontalScrollBar().setValue(0)
 
-		# treating zoom
+		# handling zoom
 		self.scaleFactor = 1.0
 		
 		if(str(self.page) != "0"):
 			self.page -= 1
-
-			# treating pages
+			# handling pages
 			#print self.page
 			#page = str(self.page)
 			if(self.page < 10):
@@ -131,22 +131,25 @@ class Ui_Form(QtGui.QMainWindow):
 				page = '0' + str(self.page)
 			elif(self.page >= 100):
 				page = str(self.page)
-					
+			
 			page = self.path + page + '.jpg'
+			self.strPage = page
 			print (page)
 			self.imageLabel.setPixmap(QtGui.QPixmap(page))
 			self.imageLabel.adjustSize()
 			
 		elif(self.page == 0): 
 			page = self.path + '000.jpg'
+			self.strPage = page
 			self.imageLabel.setPixmap(QtGui.QPixmap(page))
 			self.imageLabel.adjustSize()
 	
 	def changes(self):
 		self.window = teste.Ui_Dialog()
+		self.window.name = self.strPage
+		print(self.window.name)
 		self.window.show()
-
-		
+	
 	def zoomIn(self):
 		self.scaleImage(1.25)
  

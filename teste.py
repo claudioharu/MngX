@@ -53,6 +53,7 @@ class Ui_Dialog(QtGui.QWidget):
         self.horizontalLayout.addWidget(self.label)
         self.horizontalSlider = QtGui.QSlider(self.widget)
         self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.horizontalSlider.setRange(0,100)
         self.horizontalSlider.setObjectName("horizontalSlider")
         self.horizontalLayout.addWidget(self.horizontalSlider)
         self.label_2 = QtGui.QLabel(self.widget)
@@ -83,7 +84,7 @@ class Ui_Dialog(QtGui.QWidget):
         self.label_2.setText(QtGui.QApplication.translate("Dialog", "100", None, QtGui.QApplication.UnicodeUTF8))
 		
     def getContrastValue(self, value):
-        self.contrast = value
+        self.contrast = float(value)
         print(self.contrast)
     
     def getBrightnessValue(self, value):
@@ -93,7 +94,6 @@ class Ui_Dialog(QtGui.QWidget):
     def setContrast(self):
         manga.sharp(self.name)
         manga.contrast(self.name)
-        #manga.dinamicContrast(1.0, self.brightness, self.name)
         return QtGui.QWidget.close(self)
 
     def cancel(self):
