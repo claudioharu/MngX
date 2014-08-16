@@ -1,9 +1,11 @@
 #! /usr/bin/env env
+# -*- coding: utf-8 -*-
 
 from PySide import QtCore, QtGui
 import ExtendedQLabel
 import teste
 import os
+import glob
 
 class Ui_Form(QtGui.QMainWindow):
 
@@ -48,17 +50,48 @@ class Ui_Form(QtGui.QMainWindow):
 		self.scrollArea.setAlignment(QtCore.Qt.AlignCenter)
 		self.setCentralWidget(self.scrollArea)
 		
-	
-		self.pushButton = QtGui.QPushButton(Form)
-		self.pushButton.setGeometry(QtCore.QRect(0, 0, 31, 31))
-		self.pushButton.setObjectName("pushButton")            
+		# creating commandLinkButtons
+		self.commandLinkButton = QtGui.QCommandLinkButton(Form)
+		self.commandLinkButton_2 = QtGui.QCommandLinkButton(Form)
 
+		# creating lineEdit
+		self.lineEdit = QtGui.QLineEdit(Form)
+		self.lineEdit.setGeometry(QtCore.QRect(0, 0, 113, 27))
+
+		# input's font
+		font = QtGui.QFont()
+		font.setFamily("Purisa")
+		font.setWeight(75)
+		font.setItalic(True)
+		font.setBold(True)
+		self.lineEdit.setFont(font)
+		self.lineEdit.setFocusPolicy(QtCore.Qt.ClickFocus)
+
+		# creating spacer 
+		self.spacer = QtGui.QSpacerItem(778, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+		
+		# Main window properties
 		self.widget = QtGui.QWidget(Form)
 		self.widget.setGeometry(QtCore.QRect(0, 0, 1366, 768))
+
+		# creating layouts 
 		self.verticalLayout = QtGui.QVBoxLayout(self.widget)
 		self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-		self.verticalLayout.addWidget(self.pushButton)
+		self.horizontalLayout = QtGui.QHBoxLayout()
+		
+		# horizontalLayout <- commandLinkButtons and lineEdit
+		self.horizontalLayout.addWidget(self.commandLinkButton)
+		self.horizontalLayout.addWidget(self.commandLinkButton_2)
+		self.horizontalLayout.addItem(self.spacer)
+		self.horizontalLayout.addWidget(self.lineEdit)
+
+
+		# verticalLayout <- horizontalLayout
+		self.verticalLayout.addLayout(self.horizontalLayout)
+
+		# verticalLayout <- scrollArea
 		self.verticalLayout.addWidget(self.scrollArea)
+
 			
 		self.createActions()
 		self.createMenus()
@@ -71,11 +104,25 @@ class Ui_Form(QtGui.QMainWindow):
 
 	def retranslateUi(self, Form):
 		Form.setWindowTitle(QtGui.QApplication.translate("Form", "Mangax", None, QtGui.QApplication.UnicodeUTF8))
-		page = self.path + '000.jpg'
-		self.strPage = page
-		print(page)
-		self.imageLabel.setPixmap(QtGui.QPixmap(page))
+		self.lineEdit.setPlaceholderText(QtGui.QApplication.translate("Form", "Mangá Title", None, QtGui.QApplication.UnicodeUTF8))
+
+
+		self.chapters = []
+
+		# Find the matching files for each valid
+		# extension and add them to the images list
+		pattern = os.path.join(self.path,'*.jpg')
+		# print glob.glob(pattern)
+		self.chapters.extend(glob.glob(pattern))
+		self.chapters.sort()
+		
+		print(self.chapters[self.page])
+		self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 		self.imageLabel.adjustSize()
+		
+		#scale image
+		self.scaleImage(0.8)
+		self.scaleImage(0.8)
 
 	def fitToWindow(self):
 		fitToWindow = self.fitToWindowAct.isChecked()
@@ -94,21 +141,28 @@ class Ui_Form(QtGui.QMainWindow):
 		# handling zoom
 		self.scaleFactor = 1.0
 
-		# handling pages
-		self.page += 1		
-		#print self.page
+		if(self.page <= len(self.chapters)):
+			# handling pages
+			self.page += 1
+			print self.page
 
-		if(self.page < 10):
-			page = '00' + str(self.page)
-		elif(10 <= self.page < 100):
-			page = '0' + str(self.page)
-		elif(self.page >= 100):
-			page = str(self.page)
-		page = self.path + page + '.jpg'
-		self.strPage = page
-		print (page)
-		self.imageLabel.setPixmap(QtGui.QPixmap(page))
-		self.imageLabel.adjustSize()
+			if(self.page == len(self.chapters)):
+				self.page -= 1
+				msgBox = QtGui.QMessageBox()
+				msgBox.setWindowTitle("End")
+				msgBox.setText("End of Chapter.")
+				msgBox.exec_()
+
+			else:
+				print (self.chapters[self.page])
+				self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
+				self.imageLabel.adjustSize()
+
+			#scale image
+			self.scaleImage(0.8)
+			self.scaleImage(0.8)
+	
+
 		
 	def previusPage(self):
 
@@ -120,30 +174,22 @@ class Ui_Form(QtGui.QMainWindow):
 		# handling zoom
 		self.scaleFactor = 1.0
 		
-		if(str(self.page) != "0"):
+		if(self.page != 0):
 			self.page -= 1
-			# handling pages
-			#print self.page
-			#page = str(self.page)
-			if(self.page < 10):
-				page = '00' + str(self.page)
-			elif(10 <= self.page < 100):
-				page = '0' + str(self.page)
-			elif(self.page >= 100):
-				page = str(self.page)
-			
-			page = self.path + page + '.jpg'
-			self.strPage = page
-			print (page)
-			self.imageLabel.setPixmap(QtGui.QPixmap(page))
+			print self.page
+			print (self.chapters[self.page])
+			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 			self.imageLabel.adjustSize()
 			
 		elif(self.page == 0): 
-			page = self.path + '000.jpg'
-			self.strPage = page
-			self.imageLabel.setPixmap(QtGui.QPixmap(page))
+			print (self.chapters[self.page])
+			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 			self.imageLabel.adjustSize()
-	
+
+		#scale image
+		self.scaleImage(0.8)
+		self.scaleImage(0.8)
+
 	def changes(self):
 		self.window = teste.Ui_Dialog()
 		self.window.name = self.strPage
@@ -190,8 +236,8 @@ class Ui_Form(QtGui.QMainWindow):
 		self.PreviusPage.setEnabled(not self.exitAct.isChecked())
 		self.Changes.setEnabled(not self.exitAct.isChecked())
 		
-	def scaleImage(self, factor):
-		self.zoomInAct.setEnabled(self.scaleFactor < 3.0)
+	#def scaleImage(self, factor):
+	#	self.zoomInAct.setEnabled(self.scaleFactor < 3.0)
 
 
 	def createMenus(self):
@@ -231,6 +277,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.adjustScrollBar(self.scrollArea.verticalScrollBar(), factor)
 
 		self.zoomInAct.setEnabled(self.scaleFactor < 3.0)
+		self.zoomOutAct.setEnabled(self.scaleFactor > 0.333)
 		
 	def adjustScrollBar(self, scrollBar, factor):
 		scrollBar.setValue(int(factor * scrollBar.value()+ ((factor - 1) * scrollBar.pageStep()/2)))

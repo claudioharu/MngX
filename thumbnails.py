@@ -37,24 +37,11 @@ class ImageFileList(QtGui.QListWidget):
         for extension in supported_image_extensions():
             pattern = os.path.join(self._dirpath,
                                    '*.%s' % extension)
-        #     print glob.glob(pattern)
-        #     images.extend(glob.glob(pattern))
- 
-        numPages = 20
-        for i in range(0,numPages):
-            page = ''
-            if(i < 10):
-                page = '00' + str(i)
-            elif(10 <= i < 100):
-                page = '0' + str(i)
-            elif(i >= 100):
-                page = str(i)
-
-            page = self._dirpath + '/' + page + '.jpg'
-            #print page
-
-            images.append(page)
-
+            print glob.glob(pattern)
+            images.extend(glob.glob(pattern))
+        
+        # 
+        images.sort()
         return images
  
  
@@ -69,7 +56,7 @@ class ImageFileList(QtGui.QListWidget):
         # setting the text and icon appropriately
         for image in self._images():
             item = QtGui.QListWidgetItem(self)
-            item.setText(image)
+            #item.setText(image)
             item.setIcon(QtGui.QIcon(image))
 
 if __name__ == '__main__':
