@@ -68,11 +68,12 @@ class Ui_Form(QtGui.QMainWindow):
 		self.lineEdit.setFont(font)
 		self.lineEdit.setFocusPolicy(QtCore.Qt.ClickFocus)
 
-		# creating spinBox
+		# creating spinBox "chapters"
 		self.spinBox = QtGui.QSpinBox(Form)
 		self.spinBox.setGeometry(QtCore.QRect(0, 0, 113, 27))
 		self.spinBox.setMinimum(0)
-		self.spinBox.setMaximum(1000)	
+		self.spinBox.setMaximum(1000)
+		QtCore.QObject.connect(self.spinBox, QtCore.SIGNAL('valueChanged(int)'), self.changeChapterSpinBox)
 
 		# creating thumbnails
 		self.win = QtGui.QWidget(Form)
@@ -81,7 +82,6 @@ class Ui_Form(QtGui.QMainWindow):
 		sizePolicy.setHeightForWidth(self.win.sizePolicy().hasHeightForWidth())
 		self.thumb = thumbnails.ImageFileList(self.path, self.win)
 		self.thumb.setSizePolicy(sizePolicy)
-
 
 		# creating spacer 
 		self.spacer = QtGui.QSpacerItem(778, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -122,9 +122,6 @@ class Ui_Form(QtGui.QMainWindow):
 		
 		self.updateActions()
 
-		
-
-
 		self.retranslateUi(Form)
 
 		QtCore.QMetaObject.connectSlotsByName(Form)
@@ -141,17 +138,40 @@ class Ui_Form(QtGui.QMainWindow):
 		# Find the matching files for each valid
 		# extension and add them to the images list
 		pattern = os.path.join(self.path,'*.jpg')
-		# print glob.glob(pattern)
 		self.chapters.extend(glob.glob(pattern))
 		self.chapters.sort()
-		
+
 		print(self.chapters[self.page])
 		self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 		self.imageLabel.adjustSize()
 		
-		#scale image
+		# scale image
 		self.scaleImage(0.8)
 		self.scaleImage(0.8)
+
+		# set Max spinBox		
+		self.spinBox.setMaximum(len(self.chapters)-1)	
+
+
+	# Verificar
+	def changeChapterSpinBox(self,value):
+
+		# reset verticalscrollbar's position when the page is changed
+		self.scrollArea.verticalScrollBar().setValue(0)
+		# reset horizontalscrollbar's position when the page is changed
+		self.scrollArea.horizontalScrollBar().setValue(0)
+		# handling zoom
+		self.scaleFactor = 1.0
+
+		self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[value]))
+		self.imageLabel.adjustSize()
+
+		self.page = value
+
+		# scale image
+		self.scaleImage(0.8)
+		self.scaleImage(0.8)
+
 
 	def fitToWindow(self):
 		fitToWindow = self.fitToWindowAct.isChecked()
@@ -173,6 +193,7 @@ class Ui_Form(QtGui.QMainWindow):
 		if(self.page <= len(self.chapters)):
 			# handling pages
 			self.page += 1
+			#self.spinBox.setProperty("value", self.page)
 			print self.page
 
 			if(self.page == len(self.chapters)):
