@@ -3,11 +3,11 @@ import os
 import sys
 import glob
 
-def supported_image_extensions():
-    ''' Get the image file extensions that can be read. '''
-    formats = QtGui.QImageReader().supportedImageFormats()
-    # Convert the QByteArrays to strings
-    return [str(fmt) for fmt in formats]
+# def supported_image_extensions():
+#     ''' Get the image file extensions that can be read. '''
+#     formats = QtGui.QImageReader().supportedImageFormats()
+#     # Convert the QByteArrays to strings
+#     return [str(fmt) for fmt in formats]
 
 class ImageFileList(QtGui.QListWidget):
     ''' A specialized QListWidget that displays the
@@ -34,13 +34,10 @@ class ImageFileList(QtGui.QListWidget):
  
         # Find the matching files for each valid
         # extension and add them to the images list
-        for extension in supported_image_extensions():
-            pattern = os.path.join(self._dirpath,
-                                   '*.%s' % extension)
-            print glob.glob(pattern)
-            images.extend(glob.glob(pattern))
+        pattern = os.path.join(self._dirpath,'*.jpg')
+        print glob.glob(pattern)
+        images.extend(glob.glob(pattern))
         
-        # 
         images.sort()
         return images
  
@@ -56,35 +53,36 @@ class ImageFileList(QtGui.QListWidget):
         # setting the text and icon appropriately
         for image in self._images():
             item = QtGui.QListWidgetItem(self)
-            #item.setText(image)
+
+            item.setText(image.split('/')[-1])
             item.setIcon(QtGui.QIcon(image))
 
-if __name__ == '__main__':
-	# The app doesn't receive sys.argv, because we're using
-	# sys.argv[1] to receive the image directory
-	app = QtGui.QApplication([])
+# if __name__ == '__main__':
+# 	# The app doesn't receive sys.argv, because we're using
+# 	# sys.argv[1] to receive the image directory
+# 	app = QtGui.QApplication([])
 
-	# Create a window, set its size, and give it a layout
-	win = QtGui.QWidget()
-	win.setWindowTitle('Image List')
-	win.setMinimumSize(600, 400)
-	layout = QtGui.QVBoxLayout()
-	win.setLayout(layout)
+# 	# Create a window, set its size, and give it a layout
+# 	win = QtGui.QWidget()
+# 	win.setWindowTitle('Image List')
+# 	win.setMinimumSize(600, 400)
+# 	layout = QtGui.QVBoxLayout()
+# 	win.setLayout(layout)
 
-	# Create one of our ImageFileList objects using the image
-	# directory passed in from the command line
-	lst = ImageFileList(sys.argv[1], win)
+# 	# Create one of our ImageFileList objects using the image
+# 	# directory passed in from the command line
+# 	lst = ImageFileList(sys.argv[1], win)
 
-	layout.addWidget(lst)
+# 	layout.addWidget(lst)
 
-	entry = QtGui.QLineEdit(win)
+# 	entry = QtGui.QLineEdit(win)
 
-	layout.addWidget(entry)
+# 	layout.addWidget(entry)
 
-	def on_item_changed(curr, prev):
-		entry.setText(curr.text())
+# 	def on_item_changed(curr, prev):
+# 		entry.setText(curr.text())
 
-	lst.currentItemChanged.connect(on_item_changed)
+# 	lst.currentItemChanged.connect(on_item_changed)
 
-	win.show()
-	app.exec_()
+# 	win.show()
+# 	app.exec_()

@@ -6,6 +6,7 @@ import ExtendedQLabel
 import teste
 import os
 import glob
+import thumbnails
 
 class Ui_Form(QtGui.QMainWindow):
 
@@ -27,7 +28,7 @@ class Ui_Form(QtGui.QMainWindow):
 		
 		self.imageLabel = ExtendedQLabel.ExtendedQLabel(Form)
 		self.imageLabel.setBackgroundRole(QtGui.QPalette.Base)
-		#self.imageLabel.setSizePolicy(QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Ignored)
+		self.imageLabel.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
 		self.imageLabel.setScaledContents(True)
 		self.imageLabel.setText("")
 		self.imageLabel.setObjectName("imageLabel")
@@ -67,9 +68,24 @@ class Ui_Form(QtGui.QMainWindow):
 		self.lineEdit.setFont(font)
 		self.lineEdit.setFocusPolicy(QtCore.Qt.ClickFocus)
 
+		# creating spinBox
+		self.spinBox = QtGui.QSpinBox(Form)
+		self.spinBox.setGeometry(QtCore.QRect(0, 0, 113, 27))
+		self.spinBox.setMinimum(0)
+		self.spinBox.setMaximum(1000)	
+
+		# creating thumbnails
+		self.win = QtGui.QWidget(Form)
+		self.win.setGeometry(QtCore.QRect(0, 0, 1366, 768))
+		sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Expanding)
+		sizePolicy.setHeightForWidth(self.win.sizePolicy().hasHeightForWidth())
+		self.thumb = thumbnails.ImageFileList(self.path, self.win)
+		self.thumb.setSizePolicy(sizePolicy)
+
+
 		# creating spacer 
 		self.spacer = QtGui.QSpacerItem(778, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-		
+
 		# Main window properties
 		self.widget = QtGui.QWidget(Form)
 		self.widget.setGeometry(QtCore.QRect(0, 0, 1366, 768))
@@ -78,25 +94,36 @@ class Ui_Form(QtGui.QMainWindow):
 		self.verticalLayout = QtGui.QVBoxLayout(self.widget)
 		self.verticalLayout.setContentsMargins(0, 0, 0, 0)
 		self.horizontalLayout = QtGui.QHBoxLayout()
+		self.horizontalLayout_2 = QtGui.QHBoxLayout()
+		self.verticalLayout_2 = QtGui.QVBoxLayout()
 		
 		# horizontalLayout <- commandLinkButtons and lineEdit
 		self.horizontalLayout.addWidget(self.commandLinkButton)
 		self.horizontalLayout.addWidget(self.commandLinkButton_2)
 		self.horizontalLayout.addItem(self.spacer)
 		self.horizontalLayout.addWidget(self.lineEdit)
-
+		self.horizontalLayout.addWidget(self.spinBox)
 
 		# verticalLayout <- horizontalLayout
 		self.verticalLayout.addLayout(self.horizontalLayout)
 
-		# verticalLayout <- scrollArea
-		self.verticalLayout.addWidget(self.scrollArea)
 
-			
+		# horizontalLayout <- thumbnails
+		self.horizontalLayout_2.addWidget(self.thumb)
+		self.horizontalLayout_2.addWidget(self.scrollArea)
+
+		# verticalLayout <- scrollArea
+		#self.verticalLayout_2.addWidget(self.scrollArea)
+
+		self.verticalLayout.addLayout(self.horizontalLayout_2)
+ 
 		self.createActions()
 		self.createMenus()
 		
 		self.updateActions()
+
+		
+
 
 		self.retranslateUi(Form)
 
@@ -105,6 +132,8 @@ class Ui_Form(QtGui.QMainWindow):
 	def retranslateUi(self, Form):
 		Form.setWindowTitle(QtGui.QApplication.translate("Form", "Mangax", None, QtGui.QApplication.UnicodeUTF8))
 		self.lineEdit.setPlaceholderText(QtGui.QApplication.translate("Form", "Mangá Title", None, QtGui.QApplication.UnicodeUTF8))
+		self.lineEdit.setToolTip(QtGui.QApplication.translate("Form", "Title", None, QtGui.QApplication.UnicodeUTF8))
+		self.spinBox.setToolTip(QtGui.QApplication.translate("Form", "Chapters", None, QtGui.QApplication.UnicodeUTF8))
 
 
 		self.chapters = []
