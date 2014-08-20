@@ -17,9 +17,32 @@ class Ui_Form(QtGui.QMainWindow):
 		print(self.manga)
 		self.page = 0
 		self.scaleFactor = 1.0
+
+
+		self.chapters = self._images()
+
+		# Find the matching files for each valid
+		# extension and add them to the images list
+		# pattern = os.path.join(self.path,'*.jpg')
+		# self.chapters.extend(glob.glob(pattern))
+		# self.chapters.sort()
+
 		super(Ui_Form, self).__init__()
 		self.setupUi(self)
 		
+
+	def _images(self):
+		# Start with an empty list
+		images = []
+
+		# Find the matching files for each valid
+		# extension and add them to the images list
+		pattern = os.path.join(self.path,'*.jpg')
+		print glob.glob(pattern)
+		images.extend(glob.glob(pattern))
+
+		images.sort()
+		return images
 		
 	def setupUi(self, Form):
 		
@@ -82,7 +105,7 @@ class Ui_Form(QtGui.QMainWindow):
 		sizePolicy.setHeightForWidth(self.win.sizePolicy().hasHeightForWidth())
 		self.thumb = thumbnails.ImageFileList(self.path, self.win)
 		self.thumb.setSizePolicy(sizePolicy)
-
+		
 		# creating spacer 
 		self.spacer = QtGui.QSpacerItem(778, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
 
@@ -133,13 +156,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.spinBox.setToolTip(QtGui.QApplication.translate("Form", "Chapters", None, QtGui.QApplication.UnicodeUTF8))
 
 
-		self.chapters = []
-
-		# Find the matching files for each valid
-		# extension and add them to the images list
-		pattern = os.path.join(self.path,'*.jpg')
-		self.chapters.extend(glob.glob(pattern))
-		self.chapters.sort()
+	
 
 		print(self.chapters[self.page])
 		self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
@@ -149,13 +166,13 @@ class Ui_Form(QtGui.QMainWindow):
 		self.scaleImage(0.8)
 		self.scaleImage(0.8)
 
+		self.setSpinBoxMaximum()
+
+	def setSpinBoxMaximum(self):
 		# set Max spinBox		
-		self.spinBox.setMaximum(len(self.chapters)-1)	
+		self.spinBox.setMaximum(len(self.chapters)-1)
 
-
-	# Verificar
-	def changeChapterSpinBox(self,value):
-
+	def resetScroll(self):
 		# reset verticalscrollbar's position when the page is changed
 		self.scrollArea.verticalScrollBar().setValue(0)
 		# reset horizontalscrollbar's position when the page is changed
@@ -163,14 +180,20 @@ class Ui_Form(QtGui.QMainWindow):
 		# handling zoom
 		self.scaleFactor = 1.0
 
-		self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[value]))
-		self.imageLabel.adjustSize()
+	# Verificar
+	def changeChapterSpinBox(self,value):
+		if(self.flagChangeSpinBox):
+			self.resetScroll()
+
+			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[value]))
+			self.imageLabel.adjustSize()
+
+			# scale image
+			self.scaleImage(0.8)
+			self.scaleImage(0.8)
 
 		self.page = value
-
-		# scale image
-		self.scaleImage(0.8)
-		self.scaleImage(0.8)
+		self.flagChangeSpinBox = True
 
 
 	def fitToWindow(self):
@@ -182,18 +205,14 @@ class Ui_Form(QtGui.QMainWindow):
 	
 	def nextPage(self):
 
-		# reset verticalscrollbar's position when the page is changed
-		self.scrollArea.verticalScrollBar().setValue(0)
-		# reset horizontalscrollbar's position when the page is changed
-		self.scrollArea.horizontalScrollBar().setValue(0)
-
-		# handling zoom
-		self.scaleFactor = 1.0
+		self.resetScroll()
 
 		if(self.page <= len(self.chapters)):
 			# handling pages
 			self.page += 1
-			#self.spinBox.setProperty("value", self.page)
+			self.flagChangeSpinBox = False
+			self.spinBox.setProperty("value", self.page)
+			#self.flagChangeSpinBox = True
 			print self.page
 
 			if(self.page == len(self.chapters)):
@@ -202,7 +221,6 @@ class Ui_Form(QtGui.QMainWindow):
 				msgBox.setWindowTitle("End")
 				msgBox.setText("End of Chapter.")
 				msgBox.exec_()
-
 			else:
 				print (self.chapters[self.page])
 				self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
@@ -211,21 +229,17 @@ class Ui_Form(QtGui.QMainWindow):
 			#scale image
 			self.scaleImage(0.8)
 			self.scaleImage(0.8)
-	
-
 		
 	def previusPage(self):
 
-		#reset verticalscrollbar's position when the page is changed
-		self.scrollArea.verticalScrollBar().setValue(0)
-		# reset horizontalscrollbar's position when the page is changed
-		self.scrollArea.horizontalScrollBar().setValue(0)
-
-		# handling zoom
-		self.scaleFactor = 1.0
+		self.resetScroll()
 		
 		if(self.page != 0):
 			self.page -= 1
+			self.flagChangeSpinBox = False
+			self.spinBox.setProperty("value", self.page)
+			#self.flagChangeSpinBox = True
+
 			print self.page
 			print (self.chapters[self.page])
 			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))

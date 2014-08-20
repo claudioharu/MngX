@@ -16,6 +16,7 @@ class ImageFileList(QtGui.QListWidget):
     def __init__(self, dirpath, parent=None):
         QtGui.QListWidget.__init__(self, parent)
         # print(dirpath)
+        self.setIconSize(QtCore.QSize(250,250))
         self.setDirpath(dirpath)
  
  
@@ -35,7 +36,7 @@ class ImageFileList(QtGui.QListWidget):
         # Find the matching files for each valid
         # extension and add them to the images list
         pattern = os.path.join(self._dirpath,'*.jpg')
-        print glob.glob(pattern)
+        #print glob.glob(pattern)
         images.extend(glob.glob(pattern))
         
         images.sort()
@@ -53,36 +54,5 @@ class ImageFileList(QtGui.QListWidget):
         # setting the text and icon appropriately
         for image in self._images():
             item = QtGui.QListWidgetItem(self)
-
-            item.setText(image.split('/')[-1])
             item.setIcon(QtGui.QIcon(image))
-
-# if __name__ == '__main__':
-# 	# The app doesn't receive sys.argv, because we're using
-# 	# sys.argv[1] to receive the image directory
-# 	app = QtGui.QApplication([])
-
-# 	# Create a window, set its size, and give it a layout
-# 	win = QtGui.QWidget()
-# 	win.setWindowTitle('Image List')
-# 	win.setMinimumSize(600, 400)
-# 	layout = QtGui.QVBoxLayout()
-# 	win.setLayout(layout)
-
-# 	# Create one of our ImageFileList objects using the image
-# 	# directory passed in from the command line
-# 	lst = ImageFileList(sys.argv[1], win)
-
-# 	layout.addWidget(lst)
-
-# 	entry = QtGui.QLineEdit(win)
-
-# 	layout.addWidget(entry)
-
-# 	def on_item_changed(curr, prev):
-# 		entry.setText(curr.text())
-
-# 	lst.currentItemChanged.connect(on_item_changed)
-
-# 	win.show()
-# 	app.exec_()
+            #item.setSizeHint()
