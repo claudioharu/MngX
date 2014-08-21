@@ -30,7 +30,6 @@ class Ui_Form(QtGui.QMainWindow):
 		super(Ui_Form, self).__init__()
 		self.setupUi(self)
 		
-
 	def _images(self):
 		# Start with an empty list
 		images = []
@@ -38,7 +37,7 @@ class Ui_Form(QtGui.QMainWindow):
 		# Find the matching files for each valid
 		# extension and add them to the images list
 		pattern = os.path.join(self.path,'*.jpg')
-		print glob.glob(pattern)
+		#print glob.glob(pattern)
 		images.extend(glob.glob(pattern))
 
 		images.sort()
@@ -69,14 +68,35 @@ class Ui_Form(QtGui.QMainWindow):
 		palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.Window, brush)
 		self.scrollArea.setPalette(palette)
 		
+		# creating scrollArea
 		self.scrollArea.setGeometry(QtCore.QRect(560, 70, 201, 571))
 		self.scrollArea.setWidget(self.imageLabel)
 		self.scrollArea.setAlignment(QtCore.Qt.AlignCenter)
 		self.setCentralWidget(self.scrollArea)
+
+		# sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Expanding)
+		# sizePolicy.setHeightForWidth(self.scrollArea.sizePolicy().hasHeightForWidth())
+		# self.scrollArea.setSizePolicy(sizePolicy)
 		
+
+		# creating icons
+		icon = QtGui.QIcon()
+		icon.addPixmap(QtGui.QPixmap("icons/lamp.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+
 		# creating commandLinkButtons
-		self.commandLinkButton = QtGui.QCommandLinkButton(Form)
-		self.commandLinkButton_2 = QtGui.QCommandLinkButton(Form)
+		self.commandLinkButton = QtGui.QCommandLinkButton(Form)   # Next
+		self.commandLinkButton_2 = QtGui.QCommandLinkButton(Form) # Previous
+		self.toolButton = QtGui.QToolButton(Form) # Lamp
+		self.toolButton.setAutoRaise(True)
+		#self.commandLinkButton_3.setGeometry(0,0,0,0)
+		
+		# icon Lamp properties
+		self.toolButton.setIcon(icon)
+		self.toolButton.setIconSize(QtCore.QSize(30, 30))
+
+
+
 
 		# creating lineEdit
 		self.lineEdit = QtGui.QLineEdit(Form)
@@ -111,35 +131,31 @@ class Ui_Form(QtGui.QMainWindow):
 
 		# Main window properties
 		self.widget = QtGui.QWidget(Form)
-		self.widget.setGeometry(QtCore.QRect(0, 0, 1366, 768))
+		self.widget.setGeometry(QtCore.QRect(0, 0, 1366, 748))
 
-		# creating layouts 
-		self.verticalLayout = QtGui.QVBoxLayout(self.widget)
-		self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-		self.horizontalLayout = QtGui.QHBoxLayout()
+		# creating layouts
+		self.horizontalLayout = QtGui.QHBoxLayout(self.widget)
+		self.horizontalLayout.setContentsMargins(0,0,0,0)
+
+		self.horizontalLayout.addWidget(self.thumb)
+
+
+		self.verticalLayout = QtGui.QVBoxLayout()
+
 		self.horizontalLayout_2 = QtGui.QHBoxLayout()
-		self.verticalLayout_2 = QtGui.QVBoxLayout()
-		
-		# horizontalLayout <- commandLinkButtons and lineEdit
-		self.horizontalLayout.addWidget(self.commandLinkButton)
-		self.horizontalLayout.addWidget(self.commandLinkButton_2)
-		self.horizontalLayout.addItem(self.spacer)
-		self.horizontalLayout.addWidget(self.lineEdit)
-		self.horizontalLayout.addWidget(self.spinBox)
-
-		# verticalLayout <- horizontalLayout
-		self.verticalLayout.addLayout(self.horizontalLayout)
-
-
-		# horizontalLayout <- thumbnails
-		self.horizontalLayout_2.addWidget(self.thumb)
-		self.horizontalLayout_2.addWidget(self.scrollArea)
-
-		# verticalLayout <- scrollArea
-		#self.verticalLayout_2.addWidget(self.scrollArea)
+		self.horizontalLayout_2.addWidget(self.commandLinkButton)
+		self.horizontalLayout_2.addWidget(self.commandLinkButton_2)
+		self.horizontalLayout_2.addWidget(self.toolButton)
+		self.horizontalLayout_2.addItem(self.spacer)
+		self.horizontalLayout_2.addWidget(self.lineEdit)
+		self.horizontalLayout_2.addWidget(self.spinBox)
 
 		self.verticalLayout.addLayout(self.horizontalLayout_2)
- 
+		self.verticalLayout.addWidget(self.scrollArea)
+
+
+		self.horizontalLayout.addLayout(self.verticalLayout)
+
 		self.createActions()
 		self.createMenus()
 		
