@@ -16,6 +16,7 @@ class ImageFileList(QtGui.QListWidget):
     def __init__(self, dirpath, parent=None):
         QtGui.QListWidget.__init__(self, parent)
         # print(dirpath)
+        self.setMinimumWidth(self.sizeHintForColumn(0))
         self.setIconSize(QtCore.QSize(250,250))
         self.setDirpath(dirpath)
  

@@ -96,8 +96,6 @@ class Ui_Form(QtGui.QMainWindow):
 		self.toolButton.setIconSize(QtCore.QSize(30, 30))
 
 
-
-
 		# creating lineEdit
 		self.lineEdit = QtGui.QLineEdit(Form)
 		self.lineEdit.setGeometry(QtCore.QRect(0, 0, 113, 27))
@@ -124,6 +122,7 @@ class Ui_Form(QtGui.QMainWindow):
 		sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Expanding)
 		sizePolicy.setHeightForWidth(self.win.sizePolicy().hasHeightForWidth())
 		self.thumb = thumbnails.ImageFileList(self.path, self.win)
+		self.thumb.setMaximumWidth(self.thumb.sizeHintForColumn(0)+20)
 		self.thumb.setSizePolicy(sizePolicy)
 		
 		# creating spacer 
