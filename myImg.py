@@ -52,8 +52,6 @@ class Ui_Form(QtGui.QMainWindow):
 		self.imageLabel.setBackgroundRole(QtGui.QPalette.Base)
 		self.imageLabel.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
 		self.imageLabel.setScaledContents(True)
-		self.imageLabel.setText("")
-		self.imageLabel.setObjectName("imageLabel")
 
 		#image clicked()
 		self.connect(self.imageLabel, QtCore.SIGNAL('clicked()'), self.nextPage)
@@ -80,21 +78,34 @@ class Ui_Form(QtGui.QMainWindow):
 		
 
 		# creating icons
-		icon = QtGui.QIcon()
-		icon.addPixmap(QtGui.QPixmap("icons/lamp.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		lamp = QtGui.QIcon()
+		lamp.addPixmap(QtGui.QPixmap("icons/lamp.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		next = QtGui.QIcon()
+		next.addPixmap(QtGui.QPixmap("icons/next.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		previous = QtGui.QIcon()
+		previous.addPixmap(QtGui.QPixmap("icons/previous.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
-
-		# creating commandLinkButtons
-		self.commandLinkButton = QtGui.QCommandLinkButton(Form)   # Next
-		self.commandLinkButton_2 = QtGui.QCommandLinkButton(Form) # Previous
-		self.toolButton = QtGui.QToolButton(Form) # Lamp
-		self.toolButton.setAutoRaise(True)
-		#self.commandLinkButton_3.setGeometry(0,0,0,0)
+		# # creating commandLinkButtons
+		# self.commandLinkButton = QtGui.QCommandLinkButton(Form)   # Next
+		# self.commandLinkButton_2 = QtGui.QCommandLinkButton(Form) # Previous
 		
-		# icon Lamp properties
-		self.toolButton.setIcon(icon)
+		# Lamp button
+		self.toolButton = QtGui.QToolButton(Form) 
+		self.toolButton.setAutoRaise(True)
+		self.toolButton.setIcon(lamp)
 		self.toolButton.setIconSize(QtCore.QSize(30, 30))
 
+		# Next Button
+		self.toolButton_2 = QtGui.QToolButton(Form)
+		self.toolButton_2.setAutoRaise(True)
+		self.toolButton_2.setIcon(next)
+		self.toolButton_2.setIconSize(QtCore.QSize(30,30))
+
+		# Previous Button
+		self.toolButton_3 = QtGui.QToolButton(Form)
+		self.toolButton_3.setAutoRaise(True)
+		self.toolButton_3.setIcon(previous)
+		self.toolButton_3.setIconSize(QtCore.QSize(30,30))
 
 		# creating lineEdit
 		self.lineEdit = QtGui.QLineEdit(Form)
@@ -142,16 +153,21 @@ class Ui_Form(QtGui.QMainWindow):
 		self.verticalLayout = QtGui.QVBoxLayout()
 
 		self.horizontalLayout_2 = QtGui.QHBoxLayout()
-		self.horizontalLayout_2.addWidget(self.commandLinkButton)
-		self.horizontalLayout_2.addWidget(self.commandLinkButton_2)
+		#self.horizontalLayout_2.addWidget(self.toolButton_3)
+		#self.horizontalLayout_2.addWidget(self.toolButton_2)
 		self.horizontalLayout_2.addWidget(self.toolButton)
 		self.horizontalLayout_2.addItem(self.spacer)
 		self.horizontalLayout_2.addWidget(self.lineEdit)
 		self.horizontalLayout_2.addWidget(self.spinBox)
 
 		self.verticalLayout.addLayout(self.horizontalLayout_2)
-		self.verticalLayout.addWidget(self.scrollArea)
+		#self.verticalLayout.addWidget(self.scrollArea)
+		self.horizontalLayout_3 = QtGui.QHBoxLayout()
+		self.horizontalLayout_3.addWidget(self.toolButton_3)
+		self.horizontalLayout_3.addWidget(self.scrollArea)
+		self.horizontalLayout_3.addWidget(self.toolButton_2)
 
+		self.verticalLayout.addLayout(self.horizontalLayout_3)
 
 		self.horizontalLayout.addLayout(self.verticalLayout)
 
@@ -165,13 +181,11 @@ class Ui_Form(QtGui.QMainWindow):
 		QtCore.QMetaObject.connectSlotsByName(Form)
 
 	def retranslateUi(self, Form):
-		Form.setWindowTitle(QtGui.QApplication.translate("Form", "Mangax", None, QtGui.QApplication.UnicodeUTF8))
+		Form.setWindowTitle(QtGui.QApplication.translate("Form", "MangaYou", None, QtGui.QApplication.UnicodeUTF8))
 		self.lineEdit.setPlaceholderText(QtGui.QApplication.translate("Form", "Mangá Title", None, QtGui.QApplication.UnicodeUTF8))
 		self.lineEdit.setToolTip(QtGui.QApplication.translate("Form", "Title", None, QtGui.QApplication.UnicodeUTF8))
 		self.spinBox.setToolTip(QtGui.QApplication.translate("Form", "Chapters", None, QtGui.QApplication.UnicodeUTF8))
 
-
-	
 
 		print(self.chapters[self.page])
 		self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
@@ -298,7 +312,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.PreviusPage = QtGui.QAction("Previous", self,shortcut="left", enabled=False, triggered=self.previusPage)
 		self.Changes = QtGui.QAction("Image Settings", self,shortcut="Ctrl+T", enabled=False, triggered=self.changes)
 		 
-		#About Mangax
+		#About MangaYou
 		self.aboutAct = QtGui.QAction("&About", self, triggered=self.about)
 
 		#Exit
@@ -339,7 +353,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.viewMenu.addSeparator()
 		self.viewMenu.addAction(self.Changes)
 		
-		#About Mangax
+		#About MangaYou
 		self.helpMenu = QtGui.QMenu("&Help", self)
 		self.helpMenu.addAction(self.aboutAct)
 
@@ -362,8 +376,8 @@ class Ui_Form(QtGui.QMainWindow):
 		scrollBar.setValue(int(factor * scrollBar.value()+ ((factor - 1) * scrollBar.pageStep()/2)))
 
 	def about(self):
-		QtGui.QMessageBox.about(self, "About Mangax",
-        	"<p>The <b>Mangax</b>")
+		QtGui.QMessageBox.about(self, "About MangaYou",
+        	"<p>The <b>MangaYou</b>")
 			
 		
 
