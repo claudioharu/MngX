@@ -19,6 +19,21 @@ class ImageFileList(QtGui.QListWidget):
         self.setMinimumWidth(self.sizeHintForColumn(0))
         self.setIconSize(QtCore.QSize(250,250))
         self.setDirpath(dirpath)
+
+        self.setStyleSheet( """ QListWidget:item:selected {
+                                    background-color: #f07645;
+                                }
+                                QListWidget:item {
+                                    background-color: #a8a8a4;
+                                }
+                                QListWidget {
+                                    background-color: #a8a8a4;
+
+                                }
+
+                                """
+                                )
+
  
  
     def setDirpath(self, dirpath):
@@ -56,4 +71,5 @@ class ImageFileList(QtGui.QListWidget):
         for image in self._images():
             item = QtGui.QListWidgetItem(self)
             item.setIcon(QtGui.QIcon(image))
+            #item.setBackground(QtCore.Qt.gray)
             #item.setSizeHint()

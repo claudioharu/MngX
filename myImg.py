@@ -153,6 +153,8 @@ class Ui_Form(QtGui.QMainWindow):
 		self.thumb.setMaximumWidth(self.thumb.sizeHintForColumn(0)+20)
 		self.thumb.setSizePolicy(sizePolicy)
 
+		
+
 		# creating spacer 
 		self.spacer = QtGui.QSpacerItem(778, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
 
