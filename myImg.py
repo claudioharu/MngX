@@ -11,13 +11,15 @@ import thumbnails
 class Ui_Form(QtGui.QMainWindow):
 
 	def __init__(self):
+
+			
 		self.path = os.getcwd() + '/c060/'
 		print(self.path)
 		self.manga = 'berserk'
 		print(self.manga)
 		self.page = 0
 		self.scaleFactor = 1.0
-
+		self.lightOn = False
 
 		self.chapters = self._images()
 
@@ -27,8 +29,11 @@ class Ui_Form(QtGui.QMainWindow):
 		# self.chapters.extend(glob.glob(pattern))
 		# self.chapters.sort()
 
+
 		super(Ui_Form, self).__init__()
+
 		self.setupUi(self)
+
 		
 	def _images(self):
 		# Start with an empty list
@@ -71,11 +76,6 @@ class Ui_Form(QtGui.QMainWindow):
 		self.scrollArea.setAlignment(QtCore.Qt.AlignCenter)
 		self.setCentralWidget(self.scrollArea)
 
-		# sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Expanding)
-		# sizePolicy.setHeightForWidth(self.scrollArea.sizePolicy().hasHeightForWidth())
-		# self.scrollArea.setSizePolicy(sizePolicy)
-		
-
 		# creating icons
 		lamp = QtGui.QIcon()
 		lamp.addPixmap(QtGui.QPixmap("icons/lamp1.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -87,10 +87,6 @@ class Ui_Form(QtGui.QMainWindow):
 		enlarge.addPixmap(QtGui.QPixmap("icons/enlarge.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 		resize = QtGui.QIcon()
 		resize.addPixmap(QtGui.QPixmap("icons/resize.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-
-		# # creating commandLinkButtons
-		# self.commandLinkButton = QtGui.QCommandLinkButton(Form)   # Next
-		# self.commandLinkButton_2 = QtGui.QCommandLinkButton(Form) # Previous
 		
 		# Lamp button
 		self.toolButton = QtGui.QToolButton(Form) 
@@ -99,18 +95,19 @@ class Ui_Form(QtGui.QMainWindow):
 		self.toolButton.setIconSize(QtCore.QSize(30, 30))
 		QtCore.QObject.connect(self.toolButton, QtCore.SIGNAL("clicked()"), self.turnOff)
 
-
 		# Next Button
 		self.toolButton_2 = QtGui.QToolButton(Form)
 		self.toolButton_2.setAutoRaise(True)
 		self.toolButton_2.setIcon(next)
 		self.toolButton_2.setIconSize(QtCore.QSize(30,30))
+		QtCore.QObject.connect(self.toolButton_2, QtCore.SIGNAL("clicked()"), self.nextPage)
 
 		# Previous Button
 		self.toolButton_3 = QtGui.QToolButton(Form)
 		self.toolButton_3.setAutoRaise(True)
 		self.toolButton_3.setIcon(previous)
 		self.toolButton_3.setIconSize(QtCore.QSize(30,30))
+		QtCore.QObject.connect(self.toolButton_3, QtCore.SIGNAL("clicked()"), self.previousPage)
 
 		# Enlarge Button
 		self.toolButton_4 = QtGui.QToolButton(Form)
@@ -153,8 +150,6 @@ class Ui_Form(QtGui.QMainWindow):
 		self.thumb.setMaximumWidth(self.thumb.sizeHintForColumn(0)+20)
 		self.thumb.setSizePolicy(sizePolicy)
 
-		
-
 		# creating spacer 
 		self.spacer = QtGui.QSpacerItem(778, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
 
@@ -172,8 +167,6 @@ class Ui_Form(QtGui.QMainWindow):
 		self.verticalLayout = QtGui.QVBoxLayout()
 
 		self.horizontalLayout_2 = QtGui.QHBoxLayout()
-		#self.horizontalLayout_2.addWidget(self.toolButton_3)
-		#self.horizontalLayout_2.addWidget(self.toolButton_2)
 		self.horizontalLayout_2.addWidget(self.toolButton_4)
 		self.horizontalLayout_2.addWidget(self.toolButton_5)
 		self.horizontalLayout_2.addWidget(self.toolButton)
@@ -183,7 +176,6 @@ class Ui_Form(QtGui.QMainWindow):
 		
 
 		self.verticalLayout.addLayout(self.horizontalLayout_2)
-		#self.verticalLayout.addWidget(self.scrollArea)
 		self.horizontalLayout_3 = QtGui.QHBoxLayout()
 		self.horizontalLayout_3.addWidget(self.toolButton_3)
 		self.horizontalLayout_3.addWidget(self.scrollArea)
@@ -219,11 +211,23 @@ class Ui_Form(QtGui.QMainWindow):
 
 		self.setSpinBoxMaximum()
 
+	# turn off the light
 	def turnOff(self):
+		
 		palette = QtGui.QPalette()
-		brush = QtGui.QBrush(QtGui.QColor(24, 24, 24))
-		brush.setStyle(QtCore.Qt.SolidPattern)
-		palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.Window, brush)
+		if(not self.lightOn):
+			print "on"
+			brush = QtGui.QBrush(QtGui.QColor(24, 24, 24))
+			brush.setStyle(QtCore.Qt.SolidPattern)
+			palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.Window, brush)
+			self.lightOn = True
+		else:
+			print "off"
+			brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
+			brush.setStyle(QtCore.Qt.SolidPattern)
+			palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.Window, brush)
+			self.lightOn = False
+			
 		self.scrollArea.setPalette(palette)
 	
 	def setSpinBoxMaximum(self):
@@ -288,7 +292,7 @@ class Ui_Form(QtGui.QMainWindow):
 			self.scaleImage(0.8)
 			self.scaleImage(0.8)
 		
-	def previusPage(self):
+	def previousPage(self):
 
 		self.resetScroll()
 		
@@ -338,7 +342,7 @@ class Ui_Form(QtGui.QMainWindow):
 
 		#Pages
 		self.NextPage = QtGui.QAction("Next", self,shortcut="right", enabled=False, triggered=self.nextPage)
-		self.PreviusPage = QtGui.QAction("Previous", self,shortcut="left", enabled=False, triggered=self.previusPage)
+		self.PreviousPage = QtGui.QAction("Previous", self,shortcut="left", enabled=False, triggered=self.previousPage)
 		self.Changes = QtGui.QAction("Image Settings", self,shortcut="Ctrl+T", enabled=False, triggered=self.changes)
 		 
 		#About MangaYou
@@ -355,7 +359,7 @@ class Ui_Form(QtGui.QMainWindow):
 
 		#OLHAR MAIS TARDE
 		self.NextPage.setEnabled(not self.exitAct.isChecked())
-		self.PreviusPage.setEnabled(not self.exitAct.isChecked())
+		self.PreviousPage.setEnabled(not self.exitAct.isChecked())
 		self.Changes.setEnabled(not self.exitAct.isChecked())
 		
 	#def scaleImage(self, factor):
@@ -378,7 +382,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.viewMenu.addAction(self.normalSizeAct)
 		self.viewMenu.addSeparator()
 		self.viewMenu.addAction(self.NextPage)
-		self.viewMenu.addAction(self.PreviusPage)
+		self.viewMenu.addAction(self.PreviousPage)
 		self.viewMenu.addSeparator()
 		self.viewMenu.addAction(self.Changes)
 		
