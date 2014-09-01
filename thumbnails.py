@@ -17,7 +17,7 @@ class ImageFileList(QtGui.QListWidget):
         QtGui.QListWidget.__init__(self, parent)
         # print(dirpath)
         self.setMinimumWidth(self.sizeHintForColumn(0))
-        self.setIconSize(QtCore.QSize(250,250))
+        self.setIconSize(QtCore.QSize(200,200))
         self.setDirpath(dirpath)
 
         self.setStyleSheet( """ QListWidget:item:selected {
