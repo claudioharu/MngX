@@ -7,6 +7,7 @@ import teste
 import os
 import glob
 import thumbnails
+import fullScreen
 
 class Ui_Form(QtGui.QMainWindow):
 
@@ -78,7 +79,7 @@ class Ui_Form(QtGui.QMainWindow):
 
 		# creating icons
 		lamp = QtGui.QIcon()
-		lamp.addPixmap(QtGui.QPixmap("icons/lamp1.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		lamp.addPixmap(QtGui.QPixmap("icons/lamp.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 		next = QtGui.QIcon()
 		next.addPixmap(QtGui.QPixmap("icons/next.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 		previous = QtGui.QIcon()
@@ -87,6 +88,10 @@ class Ui_Form(QtGui.QMainWindow):
 		enlarge.addPixmap(QtGui.QPixmap("icons/enlarge.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 		resize = QtGui.QIcon()
 		resize.addPixmap(QtGui.QPixmap("icons/resize.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		zOut = QtGui.QIcon()
+		zOut.addPixmap(QtGui.QPixmap("icons/zoom_out.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		zIn = QtGui.QIcon()
+		zIn.addPixmap(QtGui.QPixmap("icons/zoom_in.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 		
 		# Lamp button
 		self.toolButton = QtGui.QToolButton(Form) 
@@ -114,12 +119,28 @@ class Ui_Form(QtGui.QMainWindow):
 		self.toolButton_4.setAutoRaise(True)
 		self.toolButton_4.setIcon(enlarge)
 		self.toolButton_4.setIconSize(QtCore.QSize(30,30))
+		QtCore.QObject.connect(self.toolButton_4, QtCore.SIGNAL("clicked()"), self.increase)
 
 		# Resize Button
 		self.toolButton_5 = QtGui.QToolButton(Form)
 		self.toolButton_5.setAutoRaise(True)
 		self.toolButton_5.setIcon(resize)
 		self.toolButton_5.setIconSize(QtCore.QSize(30,30))
+		QtCore.QObject.connect(self.toolButton_5, QtCore.SIGNAL("clicked()"), self.decrease)
+
+		# Zoom In Button
+		self.toolButton_6 = QtGui.QToolButton(Form)
+		self.toolButton_6.setAutoRaise(True)
+		self.toolButton_6.setIcon(zIn)
+		self.toolButton_6.setIconSize(QtCore.QSize(40,40))	
+		QtCore.QObject.connect(self.toolButton_6, QtCore.SIGNAL("clicked()"), self.zoomIn)	
+
+		# Zoom Out Button
+		self.toolButton_7 = QtGui.QToolButton(Form)
+		self.toolButton_7.setAutoRaise(True)
+		self.toolButton_7.setIcon(zOut)
+		self.toolButton_7.setIconSize(QtCore.QSize(40,40))		
+		QtCore.QObject.connect(self.toolButton_7, QtCore.SIGNAL("clicked()"), self.zoomOut)
 
 		# creating lineEdit
 		self.lineEdit = QtGui.QLineEdit(Form)
@@ -170,6 +191,8 @@ class Ui_Form(QtGui.QMainWindow):
 		self.horizontalLayout_2 = QtGui.QHBoxLayout()
 		self.horizontalLayout_2.addWidget(self.toolButton_4)
 		self.horizontalLayout_2.addWidget(self.toolButton_5)
+		self.horizontalLayout_2.addWidget(self.toolButton_6)
+		self.horizontalLayout_2.addWidget(self.toolButton_7)
 		self.horizontalLayout_2.addWidget(self.toolButton)
 		self.horizontalLayout_2.addItem(self.spacer)
 		self.horizontalLayout_2.addWidget(self.spinBox)
@@ -212,6 +235,11 @@ class Ui_Form(QtGui.QMainWindow):
 
 		self.setSpinBoxMaximum()
 
+	def increase(self):
+		self.showFullScreen()
+
+	def decrease(self):
+		self.showMaximized() 	
 
 	def itemChanged(self, curr, prev):
 		# print self.thumb.currentRow()
