@@ -63,7 +63,7 @@ class Ui_Form(QtGui.QMainWindow):
 
 		self.scrollArea = QtGui.QScrollArea()
 		
-		# collor black
+		# collor white
 		palette = QtGui.QPalette()
 		brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
 		brush.setStyle(QtCore.Qt.SolidPattern)
@@ -147,6 +147,7 @@ class Ui_Form(QtGui.QMainWindow):
 		sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Expanding)
 		sizePolicy.setHeightForWidth(self.win.sizePolicy().hasHeightForWidth())
 		self.thumb = thumbnails.ImageFileList(self.path, self.win)
+		self.thumb.currentItemChanged.connect(self.itemChanged)
 		self.thumb.setMaximumWidth(self.thumb.sizeHintForColumn(0)+20)
 		self.thumb.setSizePolicy(sizePolicy)
 
@@ -210,6 +211,24 @@ class Ui_Form(QtGui.QMainWindow):
 		self.scaleImage(0.8)
 
 		self.setSpinBoxMaximum()
+
+
+	def itemChanged(self, curr, prev):
+		# print self.thumb.currentRow()
+
+		self.page = self.thumb.currentRow()
+
+		self.resetScroll()
+		self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
+		self.imageLabel.adjustSize()
+
+		self.flagChangeSpinBox = False
+		self.spinBox.setProperty("value", self.page)
+
+		# scale image
+		self.scaleImage(0.8)
+		self.scaleImage(0.8)
+
 
 	# turn off the light
 	def turnOff(self):
@@ -316,11 +335,11 @@ class Ui_Form(QtGui.QMainWindow):
 		self.scaleImage(0.8)
 		self.scaleImage(0.8)
 
-	def changes(self):
-		self.window = teste.Ui_Dialog()
-		self.window.name = self.strPage
-		print(self.window.name)
-		self.window.show()
+	# def changes(self):
+		# self.window = teste.Ui_Dialog()
+		# self.window.name = self.strPage
+		# print(self.window.name)
+		# self.window.show()
 	
 	def zoomIn(self):
 		self.scaleImage(1.25)
@@ -343,7 +362,7 @@ class Ui_Form(QtGui.QMainWindow):
 		#Pages
 		self.NextPage = QtGui.QAction("Next", self,shortcut="right", enabled=False, triggered=self.nextPage)
 		self.PreviousPage = QtGui.QAction("Previous", self,shortcut="left", enabled=False, triggered=self.previousPage)
-		self.Changes = QtGui.QAction("Image Settings", self,shortcut="Ctrl+T", enabled=False, triggered=self.changes)
+		# self.Changes = QtGui.QAction("Image Settings", self,shortcut="Ctrl+T", enabled=False, triggered=self.changes)
 		 
 		#About MangaYou
 		self.aboutAct = QtGui.QAction("&About", self, triggered=self.about)
@@ -360,7 +379,7 @@ class Ui_Form(QtGui.QMainWindow):
 		#OLHAR MAIS TARDE
 		self.NextPage.setEnabled(not self.exitAct.isChecked())
 		self.PreviousPage.setEnabled(not self.exitAct.isChecked())
-		self.Changes.setEnabled(not self.exitAct.isChecked())
+		# self.Changes.setEnabled(not self.exitAct.isChecked())
 		
 	#def scaleImage(self, factor):
 	#	self.zoomInAct.setEnabled(self.scaleFactor < 3.0)
@@ -384,7 +403,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.viewMenu.addAction(self.NextPage)
 		self.viewMenu.addAction(self.PreviousPage)
 		self.viewMenu.addSeparator()
-		self.viewMenu.addAction(self.Changes)
+		# self.viewMenu.addAction(self.Changes)
 		
 		#About MangaYou
 		self.helpMenu = QtGui.QMenu("&Help", self)
