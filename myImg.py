@@ -236,9 +236,22 @@ class Ui_Form(QtGui.QMainWindow):
 		self.setSpinBoxMaximum()
 
 	def increase(self):
+		
+		b = self.horizontalLayout.takeAt(0)
+		w = b.widget()
+		w.setParent(None)	
+		del b
+
 		self.showFullScreen()
 
 	def decrease(self):
+		b = self.horizontalLayout.takeAt(0)
+		w = b.layout()
+		w.setParent(None)
+		del b
+		
+		self.horizontalLayout.addWidget(self.thumb)
+		self.horizontalLayout.addLayout(self.verticalLayout)
 		self.showMaximized() 	
 
 	def itemChanged(self, curr, prev):
