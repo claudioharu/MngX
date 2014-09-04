@@ -7,7 +7,6 @@ import teste
 import os
 import glob
 import thumbnails
-import fullScreen
 
 class Ui_Form(QtGui.QMainWindow):
 
@@ -21,7 +20,8 @@ class Ui_Form(QtGui.QMainWindow):
 		self.page = 0
 		self.scaleFactor = 1.0
 		self.lightOn = False
-
+		self.increasePressed = True
+		self.decreasePressed = False
 		self.chapters = self._images()
 
 		# Find the matching files for each valid
@@ -62,6 +62,9 @@ class Ui_Form(QtGui.QMainWindow):
 		#image clicked()
 		self.connect(self.imageLabel, QtCore.SIGNAL('clicked()'), self.nextPage)
 
+		# chapters Label
+		self.label = QtGui.QLabel(Form)
+
 		self.scrollArea = QtGui.QScrollArea()
 		
 		# collor white
@@ -92,7 +95,9 @@ class Ui_Form(QtGui.QMainWindow):
 		zOut.addPixmap(QtGui.QPixmap("icons/zoom_out.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 		zIn = QtGui.QIcon()
 		zIn.addPixmap(QtGui.QPixmap("icons/zoom_in.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-		
+		sch = QtGui.QIcon()
+		sch.addPixmap(QtGui.QPixmap("icons/Search.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
 		# Lamp button
 		self.toolButton = QtGui.QToolButton(Form) 
 		self.toolButton.setAutoRaise(True)
@@ -142,9 +147,26 @@ class Ui_Form(QtGui.QMainWindow):
 		self.toolButton_7.setIconSize(QtCore.QSize(40,40))		
 		QtCore.QObject.connect(self.toolButton_7, QtCore.SIGNAL("clicked()"), self.zoomOut)
 
+		# Search Button
+		self.toolButton_8 = QtGui.QToolButton(Form)
+		self.toolButton_8.setAutoRaise(True)
+		self.toolButton_8.setIcon(sch)
+		self.toolButton_8.setIconSize(QtCore.QSize(28,28))
+		#QtCore.QObject.connect(self.toolButton_8, QtCore.SIGNAL("clicked()"), self.zoomOut)
+
+
+
 		# creating lineEdit
 		self.lineEdit = QtGui.QLineEdit(Form)
 		self.lineEdit.setGeometry(QtCore.QRect(0, 0, 113, 27))
+		# self.lineEdit.setStyleSheet(
+		# 							"background: url(icons/Search.png);\n"
+		# 							"background-position: left;\n"
+		# 							"background-repeat: no-repeat;\n"
+		# 							" \n"
+		# 							"border: 1px solid black;\n"
+		# 							"border-radius: 10px;"
+		# 							)
 
 		# input's font
 		font = QtGui.QFont()
@@ -173,7 +195,8 @@ class Ui_Form(QtGui.QMainWindow):
 		self.thumb.setSizePolicy(sizePolicy)
 
 		# creating spacer 
-		self.spacer = QtGui.QSpacerItem(778, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+		self.spacer = QtGui.QSpacerItem(508, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+		self.spacer2 = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
 
 		# Main window properties
 		self.widget = QtGui.QWidget(Form)
@@ -195,8 +218,10 @@ class Ui_Form(QtGui.QMainWindow):
 		self.horizontalLayout_2.addWidget(self.toolButton_7)
 		self.horizontalLayout_2.addWidget(self.toolButton)
 		self.horizontalLayout_2.addItem(self.spacer)
+		self.horizontalLayout_2.addWidget(self.label)
 		self.horizontalLayout_2.addWidget(self.spinBox)
 		self.horizontalLayout_2.addWidget(self.lineEdit)
+		self.horizontalLayout_2.addWidget(self.toolButton_8)
 		
 
 		self.verticalLayout.addLayout(self.horizontalLayout_2)
@@ -220,10 +245,10 @@ class Ui_Form(QtGui.QMainWindow):
 
 	def retranslateUi(self, Form):
 		Form.setWindowTitle(QtGui.QApplication.translate("Form", "MangaYou", None, QtGui.QApplication.UnicodeUTF8))
-		self.lineEdit.setPlaceholderText(QtGui.QApplication.translate("Form", "Mangá Title", None, QtGui.QApplication.UnicodeUTF8))
+		self.lineEdit.setPlaceholderText(QtGui.QApplication.translate("Form", "  Mangá Title", None, QtGui.QApplication.UnicodeUTF8))
 		self.lineEdit.setToolTip(QtGui.QApplication.translate("Form", "Title", None, QtGui.QApplication.UnicodeUTF8))
 		self.spinBox.setToolTip(QtGui.QApplication.translate("Form", "Chapters", None, QtGui.QApplication.UnicodeUTF8))
-
+		self.label.setText(QtGui.QApplication.translate("Form", "Chapters", None, QtGui.QApplication.UnicodeUTF8))
 
 		print(self.chapters[self.page])
 		self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
@@ -236,23 +261,34 @@ class Ui_Form(QtGui.QMainWindow):
 		self.setSpinBoxMaximum()
 
 	def increase(self):
-		
-		b = self.horizontalLayout.takeAt(0)
-		w = b.widget()
-		w.setParent(None)	
-		del b
 
-		self.showFullScreen()
+		if(self.increasePressed):
+			b = self.horizontalLayout.takeAt(0)
+			w = b.widget()
+			w.setParent(None)	
+			del b
+
+			self.increasePressed = False
+			self.decreasePressed = True
+			self.showFullScreen()
+		# else:
+		# 	print "i cant increase"
 
 	def decrease(self):
-		b = self.horizontalLayout.takeAt(0)
-		w = b.layout()
-		w.setParent(None)
-		del b
-		
-		self.horizontalLayout.addWidget(self.thumb)
-		self.horizontalLayout.addLayout(self.verticalLayout)
-		self.showMaximized() 	
+
+		if(self.decreasePressed):
+			b = self.horizontalLayout.takeAt(0)
+			w = b.layout()
+			w.setParent(None)
+			del b
+			
+			self.decreasePressed = False
+			self.increasePressed = True
+			self.horizontalLayout.addWidget(self.thumb)
+			self.horizontalLayout.addLayout(self.verticalLayout)
+			self.showMaximized() 	
+		# else:
+		# 	print "i cant decrease"
 
 	def itemChanged(self, curr, prev):
 		# print self.thumb.currentRow()
@@ -276,13 +312,13 @@ class Ui_Form(QtGui.QMainWindow):
 		
 		palette = QtGui.QPalette()
 		if(not self.lightOn):
-			print "on"
+			# print "on"
 			brush = QtGui.QBrush(QtGui.QColor(24, 24, 24))
 			brush.setStyle(QtCore.Qt.SolidPattern)
 			palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.Window, brush)
 			self.lightOn = True
 		else:
-			print "off"
+			# print "off"
 			brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
 			brush.setStyle(QtCore.Qt.SolidPattern)
 			palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.Window, brush)
@@ -399,7 +435,8 @@ class Ui_Form(QtGui.QMainWindow):
 		self.zoomOutAct = QtGui.QAction("Zoom &Out (25%)", self,shortcut="Ctrl+-", enabled=False, triggered=self.zoomOut)
 		self.normalSizeAct = QtGui.QAction("&Normal Size", self,shortcut="Ctrl+S", enabled=False, triggered=self.normalSize)
 		self.fitToWindowAct = QtGui.QAction("&Fit to Window", self, enabled=False, checkable=True, shortcut="Ctrl+F", triggered=self.fitToWindow)
-
+		self.lightInAct = QtGui.QAction("Lights", self, shortcut="Esc", enabled=False, triggered=self.turnOff)
+		
 		#Pages
 		self.NextPage = QtGui.QAction("Next", self,shortcut="right", enabled=False, triggered=self.nextPage)
 		self.PreviousPage = QtGui.QAction("Previous", self,shortcut="left", enabled=False, triggered=self.previousPage)
@@ -420,6 +457,7 @@ class Ui_Form(QtGui.QMainWindow):
 		#OLHAR MAIS TARDE
 		self.NextPage.setEnabled(not self.exitAct.isChecked())
 		self.PreviousPage.setEnabled(not self.exitAct.isChecked())
+		self.lightInAct.setEnabled(not self.exitAct.isChecked())
 		# self.Changes.setEnabled(not self.exitAct.isChecked())
 		
 	#def scaleImage(self, factor):
@@ -443,6 +481,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.viewMenu.addSeparator()
 		self.viewMenu.addAction(self.NextPage)
 		self.viewMenu.addAction(self.PreviousPage)
+		self.viewMenu.addAction(self.lightInAct)
 		self.viewMenu.addSeparator()
 		# self.viewMenu.addAction(self.Changes)
 		
