@@ -15,13 +15,17 @@ class Ui_Form(QtGui.QMainWindow):
 			
 		self.path = os.getcwd() + '/c060/'
 		print(self.path)
-		self.manga = 'berserk'
+		self.manga = 'tenkuu_shinpan'
 		print(self.manga)
 		self.page = 0
 		self.scaleFactor = 1.0
 		self.lightOn = False
 		self.increasePressed = True
 		self.decreasePressed = False
+		self.paths = self._paths()
+		self.flagChangeSpinBox = True
+
+		self.updatePath()
 		self.chapters = self._images()
 
 		# Find the matching files for each valid
@@ -35,6 +39,26 @@ class Ui_Form(QtGui.QMainWindow):
 
 		self.setupUi(self)
 
+	def updatePath(self):
+
+		#verificar se paths estah vazio
+		self.path = self.paths[0]
+		self.paths = self.paths[1:]
+
+	def _paths(self):
+		path = os.getcwd() + "/" + self.manga + "/"
+		roots = []
+		for root, dirs, files in os.walk(path):
+			roots.append(root)
+		# print root
+
+		roots = roots[1:]
+		roots.sort()
+
+		# for root in roots:
+		# 	print root
+
+		return roots
 		
 	def _images(self):
 		# Start with an empty list
@@ -45,6 +69,7 @@ class Ui_Form(QtGui.QMainWindow):
 		pattern = os.path.join(self.path,'*.jpg')
 		#print glob.glob(pattern)
 		images.extend(glob.glob(pattern))
+
 
 		images.sort()
 		return images
@@ -152,21 +177,11 @@ class Ui_Form(QtGui.QMainWindow):
 		self.toolButton_8.setAutoRaise(True)
 		self.toolButton_8.setIcon(sch)
 		self.toolButton_8.setIconSize(QtCore.QSize(28,28))
-		#QtCore.QObject.connect(self.toolButton_8, QtCore.SIGNAL("clicked()"), self.zoomOut)
-
-
+		QtCore.QObject.connect(self.toolButton_8, QtCore.SIGNAL("clicked()"), self.download)
 
 		# creating lineEdit
 		self.lineEdit = QtGui.QLineEdit(Form)
 		self.lineEdit.setGeometry(QtCore.QRect(0, 0, 113, 27))
-		# self.lineEdit.setStyleSheet(
-		# 							"background: url(icons/Search.png);\n"
-		# 							"background-position: left;\n"
-		# 							"background-repeat: no-repeat;\n"
-		# 							" \n"
-		# 							"border: 1px solid black;\n"
-		# 							"border-radius: 10px;"
-		# 							)
 
 		# input's font
 		font = QtGui.QFont()
@@ -176,6 +191,7 @@ class Ui_Form(QtGui.QMainWindow):
 		font.setBold(True)
 		self.lineEdit.setFont(font)
 		self.lineEdit.setFocusPolicy(QtCore.Qt.ClickFocus)
+		QtCore.QObject.connect(self.lineEdit, QtCore.SIGNAL('textChanged(QString)'), self.getManga)
 
 		# creating spinBox "chapters"
 		self.spinBox = QtGui.QSpinBox(Form)
@@ -222,7 +238,6 @@ class Ui_Form(QtGui.QMainWindow):
 		self.horizontalLayout_2.addWidget(self.spinBox)
 		self.horizontalLayout_2.addWidget(self.lineEdit)
 		self.horizontalLayout_2.addWidget(self.toolButton_8)
-		
 
 		self.verticalLayout.addLayout(self.horizontalLayout_2)
 		self.horizontalLayout_3 = QtGui.QHBoxLayout()
@@ -259,6 +274,24 @@ class Ui_Form(QtGui.QMainWindow):
 		self.scaleImage(0.8)
 
 		self.setSpinBoxMaximum()
+
+	# Get manga's name
+	def getManga(self, title):
+		self.manga = title
+		print self.manga
+
+	# Start the download
+	def download(self):
+		# Treating the title
+		title = self.manga.split(" ")
+		self.manga = ""
+		for t in title:
+			self.manga += str(t) + "_"
+
+		self.manga = self.manga[:-1]
+		print "Downloading " + self.manga
+		self.lineEdit.clear()
+		self.imageLabel.setFocus()
 
 	def increase(self):
 
@@ -379,6 +412,21 @@ class Ui_Form(QtGui.QMainWindow):
 				msgBox.setWindowTitle("End")
 				msgBox.setText("End of Chapter.")
 				msgBox.exec_()
+				
+				# SE TIVER MAIS CAPITULOS
+				# TEM QUE VERIFICAR
+				self.page = 0
+				self.spinBox.setValue(0)
+
+				self.updatePath()
+				self.chapters = self._images()
+
+				self.thumb._update(self.path)
+				self.resetScroll()
+
+				self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
+				self.imageLabel.adjustSize()
+
 			else:
 				print (self.chapters[self.page])
 				self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))

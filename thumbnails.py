@@ -73,3 +73,7 @@ class ImageFileList(QtGui.QListWidget):
             item.setIcon(QtGui.QIcon(image))
             #item.setBackground(QtCore.Qt.gray)
             #item.setSizeHint()
+
+    def _update(self, path):
+        self.clear()
+        self.setDirpath(path)
