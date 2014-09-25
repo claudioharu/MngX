@@ -422,7 +422,8 @@ class Ui_Form(QtGui.QMainWindow):
 				self.chapters = self._images()
 
 				self.thumb._update(self.path)
-				self.resetScroll()
+ 
+ 				self.resetScroll()
 
 				self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 				self.imageLabel.adjustSize()

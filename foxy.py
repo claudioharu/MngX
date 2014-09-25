@@ -177,7 +177,7 @@ def main():
 
     
 #   ex.showFullScreen()
-   
+    
 
     spider = MangafoxSpider("tenkuu_shinpan")
     spider.show()
