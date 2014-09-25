@@ -77,3 +77,6 @@ class ImageFileList(QtGui.QListWidget):
     def _update(self, path):
         self.clear()
         self.setDirpath(path)
+
+    def _setRow(self, item):
+        self.setCurrentItem()

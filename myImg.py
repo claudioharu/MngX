@@ -18,6 +18,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.manga = 'tenkuu_shinpan'
 		print(self.manga)
 		self.page = 0
+		self.pathIndex = 0
 		self.scaleFactor = 1.0
 		self.lightOn = False
 		self.increasePressed = True
@@ -34,29 +35,48 @@ class Ui_Form(QtGui.QMainWindow):
 		# self.chapters.extend(glob.glob(pattern))
 		# self.chapters.sort()
 
-
 		super(Ui_Form, self).__init__()
 
 		self.setupUi(self)
 
 	def updatePath(self):
 
-		#verificar se paths estah vazio
-		self.path = self.paths[0]
-		self.paths = self.paths[1:]
+		if self.paths:
+			#verificar se paths estah vazio
+			self.path = self.paths[self.pathIndex]
 
+	def nextChapter(self):
+		print "next"
+		if self.paths:
+			if self.pathIndex < len(self.paths): 
+				self.pathIndex += 1
+				print "Chapter" + str(self.pathIndex)
+				self.path = self.paths[self.pathIndex]
+				
+			# else:
+			# 	# Acabou caps
+			# 	# Criar janela
+
+	def previousChapter(self):
+		print "previous"
+		if self.paths:
+			print self.pathIndex
+			if self.pathIndex > 0:
+				self.pathIndex -= 1
+				print "Chapter" + str(self.pathIndex)
+				self.path = self.paths[self.pathIndex]
+				
 	def _paths(self):
 		path = os.getcwd() + "/" + self.manga + "/"
 		roots = []
 		for root, dirs, files in os.walk(path):
 			roots.append(root)
-		# print root
 
 		roots = roots[1:]
 		roots.sort()
 
-		# for root in roots:
-		# 	print root
+		for root in roots:
+			print root
 
 		return roots
 		
@@ -282,7 +302,7 @@ class Ui_Form(QtGui.QMainWindow):
 
 	# Start the download
 	def download(self):
-		# Treating the title
+		# Treating titles
 		title = self.manga.split(" ")
 		self.manga = ""
 		for t in title:
@@ -339,7 +359,6 @@ class Ui_Form(QtGui.QMainWindow):
 		self.scaleImage(0.8)
 		self.scaleImage(0.8)
 
-
 	# turn off the light
 	def turnOff(self):
 		
@@ -386,7 +405,6 @@ class Ui_Form(QtGui.QMainWindow):
 		self.page = value
 		self.flagChangeSpinBox = True
 
-
 	def fitToWindow(self):
 		fitToWindow = self.fitToWindowAct.isChecked()
 		self.scrollArea.setWidgetResizable(fitToWindow)
@@ -418,7 +436,7 @@ class Ui_Form(QtGui.QMainWindow):
 				self.page = 0
 				self.spinBox.setValue(0)
 
-				self.updatePath()
+				self.nextChapter()
 				self.chapters = self._images()
 
 				self.thumb._update(self.path)
@@ -438,24 +456,33 @@ class Ui_Form(QtGui.QMainWindow):
 			self.scaleImage(0.8)
 		
 	def previousPage(self):
-
+		
 		self.resetScroll()
 		
-		if(self.page != 0):
+		if(self.page > 0):
 			self.page -= 1
 			self.flagChangeSpinBox = False
 			self.spinBox.setProperty("value", self.page)
 			#self.flagChangeSpinBox = True
 
-			print self.page
-			print (self.chapters[self.page])
+			# print self.page
+			# print (self.chapters[self.page])
 			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 			self.imageLabel.adjustSize()
 			
-		elif(self.page == 0): 
-			print (self.chapters[self.page])
+		else:
+			self.previousChapter()
+			self.chapters = self._images()
+
+			self.thumb._update(self.path)
+
+			self.resetScroll()
+
 			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 			self.imageLabel.adjustSize()
+			# print (self.chapters[self.page])
+			# self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
+			# self.imageLabel.adjustSize()
 
 		#scale image
 		self.scaleImage(0.8)
