@@ -175,9 +175,7 @@ def main():
     import sys
     app = QtGui.QApplication(sys.argv)
 
-    
-#   ex.showFullScreen()
-    
+    # ex.showFullScreen()
 
     spider = MangafoxSpider("tenkuu_shinpan")
     spider.show()

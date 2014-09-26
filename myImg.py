@@ -288,7 +288,8 @@ class Ui_Form(QtGui.QMainWindow):
 		print(self.chapters[self.page])
 		self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 		self.imageLabel.adjustSize()
-		
+		self.thumb.item(self.page).setSelected(True)
+
 		# scale image
 		self.scaleImage(0.8)
 		self.scaleImage(0.8)
@@ -394,6 +395,7 @@ class Ui_Form(QtGui.QMainWindow):
 	def changeChapterSpinBox(self,value):
 		if(self.flagChangeSpinBox):
 			self.resetScroll()
+			self.thumb.item(value).setSelected(True)
 
 			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[value]))
 			self.imageLabel.adjustSize()
@@ -435,6 +437,7 @@ class Ui_Form(QtGui.QMainWindow):
 				# TEM QUE VERIFICAR
 				self.page = 0
 				self.spinBox.setValue(0)
+				self.thumb.item(self.page).setSelected(True)
 
 				self.nextChapter()
 				self.chapters = self._images()
@@ -448,6 +451,8 @@ class Ui_Form(QtGui.QMainWindow):
 
 			else:
 				print (self.chapters[self.page])
+				self.thumb.item(self.page).setSelected(True)
+
 				self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 				self.imageLabel.adjustSize()
 
@@ -467,6 +472,8 @@ class Ui_Form(QtGui.QMainWindow):
 
 			# print self.page
 			# print (self.chapters[self.page])
+			self.thumb.item(self.page).setSelected(True)
+
 			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 			self.imageLabel.adjustSize()
 			
@@ -477,6 +484,7 @@ class Ui_Form(QtGui.QMainWindow):
 			self.thumb._update(self.path)
 
 			self.resetScroll()
+			self.thumb.item(self.page).setSelected(True)
 
 			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 			self.imageLabel.adjustSize()
