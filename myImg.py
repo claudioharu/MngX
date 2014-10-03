@@ -7,6 +7,8 @@ import teste
 import os
 import glob
 import thumbnails
+from foxy import *
+from Thread import *
 
 class Ui_Form(QtGui.QMainWindow):
 
@@ -25,6 +27,8 @@ class Ui_Form(QtGui.QMainWindow):
 		self.decreasePressed = False
 		self.paths = self._paths()
 		self.flagChangeSpinBox = True
+
+		self.spider = QtGui.QWidget()
 
 		self.updatePath()
 		self.chapters = self._images()
@@ -107,8 +111,11 @@ class Ui_Form(QtGui.QMainWindow):
 		#image clicked()
 		self.connect(self.imageLabel, QtCore.SIGNAL('clicked()'), self.nextPage)
 
-		# chapters Label
+		# pages Label
 		self.label = QtGui.QLabel(Form)
+
+		# chapters Label
+		self.label_2 = QtGui.QLabel(Form)
 
 		self.scrollArea = QtGui.QScrollArea()
 		
@@ -218,7 +225,14 @@ class Ui_Form(QtGui.QMainWindow):
 		self.spinBox.setGeometry(QtCore.QRect(0, 0, 113, 27))
 		self.spinBox.setMinimum(0)
 		self.spinBox.setMaximum(1000)
-		QtCore.QObject.connect(self.spinBox, QtCore.SIGNAL('valueChanged(int)'), self.changeChapterSpinBox)
+		QtCore.QObject.connect(self.spinBox, QtCore.SIGNAL('valueChanged(int)'), self.changePageSpinBox)
+
+		# creating spinBox "chapters"
+		self.spinBox_2 = QtGui.QSpinBox(Form)
+		self.spinBox_2.setGeometry(QtCore.QRect(0, 0, 113, 27))
+		self.spinBox_2.setMinimum(0)
+		self.spinBox_2.setMaximum(1000)
+		#QtCore.QObject.connect(self.spinBox, QtCore.SIGNAL('valueChanged(int)'), self.changePageSpinBox)
 
 		# creating thumbnails
 		self.win = QtGui.QWidget(Form)
@@ -233,6 +247,11 @@ class Ui_Form(QtGui.QMainWindow):
 		# creating spacer 
 		self.spacer = QtGui.QSpacerItem(508, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
 		self.spacer2 = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+		
+		self.prog = QtGui.QProgressBar(Form) 
+		# QtCore.QObject.connect(self.prog, QtCore.SIGNAL("progress(int)"),self.progressBar, QtCore.SLOT("setValue(int)"), QtCore.Qt.DirectConnection)
+	 	QtCore.QObject.connect(self.spider, QtCore.SIGNAL("progress(int)"),self.prog, QtCore.SLOT("setValue(int)"), QtCore.Qt.QueuedConnection)
+
 
 		# Main window properties
 		self.widget = QtGui.QWidget(Form)
@@ -244,7 +263,6 @@ class Ui_Form(QtGui.QMainWindow):
 
 		self.horizontalLayout.addWidget(self.thumb)
 
-
 		self.verticalLayout = QtGui.QVBoxLayout()
 
 		self.horizontalLayout_2 = QtGui.QHBoxLayout()
@@ -254,10 +272,13 @@ class Ui_Form(QtGui.QMainWindow):
 		self.horizontalLayout_2.addWidget(self.toolButton_7)
 		self.horizontalLayout_2.addWidget(self.toolButton)
 		self.horizontalLayout_2.addItem(self.spacer)
+		self.horizontalLayout_2.addWidget(self.label_2)
+		self.horizontalLayout_2.addWidget(self.spinBox_2)
 		self.horizontalLayout_2.addWidget(self.label)
 		self.horizontalLayout_2.addWidget(self.spinBox)
 		self.horizontalLayout_2.addWidget(self.lineEdit)
 		self.horizontalLayout_2.addWidget(self.toolButton_8)
+		self.horizontalLayout_2.addWidget(self.prog)
 
 		self.verticalLayout.addLayout(self.horizontalLayout_2)
 		self.horizontalLayout_3 = QtGui.QHBoxLayout()
@@ -282,8 +303,10 @@ class Ui_Form(QtGui.QMainWindow):
 		Form.setWindowTitle(QtGui.QApplication.translate("Form", "MangaYou", None, QtGui.QApplication.UnicodeUTF8))
 		self.lineEdit.setPlaceholderText(QtGui.QApplication.translate("Form", "  Mangá Title", None, QtGui.QApplication.UnicodeUTF8))
 		self.lineEdit.setToolTip(QtGui.QApplication.translate("Form", "Title", None, QtGui.QApplication.UnicodeUTF8))
-		self.spinBox.setToolTip(QtGui.QApplication.translate("Form", "Chapters", None, QtGui.QApplication.UnicodeUTF8))
-		self.label.setText(QtGui.QApplication.translate("Form", "Chapters", None, QtGui.QApplication.UnicodeUTF8))
+		self.spinBox.setToolTip(QtGui.QApplication.translate("Form", "Pages", None, QtGui.QApplication.UnicodeUTF8))
+		self.label.setText(QtGui.QApplication.translate("Form", "Pages:", None, QtGui.QApplication.UnicodeUTF8))
+		self.label_2.setText(QtGui.QApplication.translate("Form", "Chapters:", None, QtGui.QApplication.UnicodeUTF8))
+		self.toolButton_8.setToolTip(QtGui.QApplication.translate("Form", "Search", None, QtGui.QApplication.UnicodeUTF8))
 
 		print(self.chapters[self.page])
 		self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
@@ -295,6 +318,8 @@ class Ui_Form(QtGui.QMainWindow):
 		self.scaleImage(0.8)
 
 		self.setSpinBoxMaximum()
+#		self.spinBox_2.setMaximum(len(self.paths)-1)
+
 
 	# Get manga's name
 	def getManga(self, title):
@@ -311,11 +336,42 @@ class Ui_Form(QtGui.QMainWindow):
 
 		self.manga = self.manga[:-1]
 		print "Downloading " + self.manga
+
+		title = self.manga
 		self.lineEdit.clear()
 		self.imageLabel.setFocus()
+		# self.thread = Thread()
+		# self.thread.setTitle(title)
+		# self.thread.run()
+
+		newpid = os.fork()
+		if newpid == 0:
+			print "filho"
+			import sys
+		
+			os.system("python foxy.py " + str(title))
+		
+		# 	self.spider = MangafoxSpider(title)
+		# 	# spider.show()
+		# 	crawler = create_crawler(self.spider)
+
+		# 	# # start engine scrapy/twisted
+		# 	print 'Starting'
+		# 	crawler.start()
+		# 	print 'Successfully completed. Stopping.'
+		# 	# splider.close()
+			os._exit(0)  
+
+		# else:
+		# 	pids = (os.getpid(), newpid)
+		# 	print "parent: %d, child: %d" % pids
+
+		# self.spinBox_2.setMaximum(len(self.paths)-1)
+
+		
 
 	def increase(self):
-
+		# print "increase"
 		if(self.increasePressed):
 			b = self.horizontalLayout.takeAt(0)
 			w = b.widget()
@@ -329,7 +385,7 @@ class Ui_Form(QtGui.QMainWindow):
 		# 	print "i cant increase"
 
 	def decrease(self):
-
+		# print "decrease"
 		if(self.decreasePressed):
 			b = self.horizontalLayout.takeAt(0)
 			w = b.layout()
@@ -341,6 +397,7 @@ class Ui_Form(QtGui.QMainWindow):
 			self.horizontalLayout.addWidget(self.thumb)
 			self.horizontalLayout.addLayout(self.verticalLayout)
 			self.showMaximized() 	
+			self.thumb._scroll(self.page)
 		# else:
 		# 	print "i cant decrease"
 
@@ -360,7 +417,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.scaleImage(0.8)
 		self.scaleImage(0.8)
 
-	# turn off the light
+	# Turn off the light
 	def turnOff(self):
 		
 		palette = QtGui.QPalette()
@@ -392,11 +449,11 @@ class Ui_Form(QtGui.QMainWindow):
 		self.scaleFactor = 1.0
 
 	# Verificar
-	def changeChapterSpinBox(self,value):
+	def changePageSpinBox(self,value):
 		if(self.flagChangeSpinBox):
 			self.resetScroll()
 			self.thumb.item(value).setSelected(True)
-
+			self.thumb._scroll(value)
 			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[value]))
 			self.imageLabel.adjustSize()
 
@@ -437,13 +494,15 @@ class Ui_Form(QtGui.QMainWindow):
 				# TEM QUE VERIFICAR
 				self.page = 0
 				self.spinBox.setValue(0)
-				self.thumb.item(self.page).setSelected(True)
-
+				
 				self.nextChapter()
 				self.chapters = self._images()
 
+				# Treating thumbnails
 				self.thumb._update(self.path)
- 
+				self.thumb._scroll(self.page)
+				self.thumb.item(self.page).setSelected(True)
+
  				self.resetScroll()
 
 				self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
@@ -452,7 +511,7 @@ class Ui_Form(QtGui.QMainWindow):
 			else:
 				print (self.chapters[self.page])
 				self.thumb.item(self.page).setSelected(True)
-
+				self.thumb._scroll(self.page)
 				self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 				self.imageLabel.adjustSize()
 
@@ -472,7 +531,9 @@ class Ui_Form(QtGui.QMainWindow):
 
 			# print self.page
 			# print (self.chapters[self.page])
+			# Treating thumbnails
 			self.thumb.item(self.page).setSelected(True)
+			self.thumb._scroll(self.page)
 
 			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 			self.imageLabel.adjustSize()
@@ -480,11 +541,12 @@ class Ui_Form(QtGui.QMainWindow):
 		else:
 			self.previousChapter()
 			self.chapters = self._images()
-
-			self.thumb._update(self.path)
-
 			self.resetScroll()
+			
+			# Treating thumbnails
+			self.thumb._update(self.path)
 			self.thumb.item(self.page).setSelected(True)
+			self.thumb._scroll(self.page)
 
 			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 			self.imageLabel.adjustSize()

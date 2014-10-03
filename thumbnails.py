@@ -34,6 +34,8 @@ class ImageFileList(QtGui.QListWidget):
                                 """
                                 )
 
+        self._scroll(0)
+
  
  
     def setDirpath(self, dirpath):
@@ -80,3 +82,7 @@ class ImageFileList(QtGui.QListWidget):
 
     def _setRow(self, item):
         self.setCurrentItem()
+
+    def _scroll(self, value):
+        self.verticalScrollBar().setValue(value)
+       

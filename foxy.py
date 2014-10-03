@@ -47,10 +47,10 @@ class MangafoxSpider(BaseSpider, QtGui.QWidget):
         self.totalChapt = len(chapters)
 
         if not chapters:
-            print 'Can not find manga series with specified title.'
+            # print 'Can not find manga series with specified title.'
             return
 
-        print 'Found %s chapters of %s manga series' % (len(chapters), self.title)
+        # print 'Found %s chapters of %s manga series' % (len(chapters), self.title)
 
         reqs = []
         chapters.sort()
@@ -65,7 +65,7 @@ class MangafoxSpider(BaseSpider, QtGui.QWidget):
 
         volume, chapter_number = response.url.split('/')[-3: -1]
         chapter = MangaChapter(self.title, volume, chapter_number, pages_count)
-        print 'Chapter %s of volume %s consists of %s pages. Rerieving urls of pages images...' % (chapter_number, volume, pages_count)
+        # print 'Chapter %s of volume %s consists of %s pages. Rerieving urls of pages images...' % (chapter_number, volume, pages_count)
 
 
         reqs = []
@@ -87,7 +87,7 @@ class MangafoxSpider(BaseSpider, QtGui.QWidget):
         chapter.pages[page_number] = image_url
         if len(chapter.pages) == chapter.pages_count:
             #Sinal de progresso incrementado
-            print 'All urls of chapter %s of volume %s retrieved. Starting download...' % (chapter.chapter_number, chapter.volume)
+            # print 'All urls of chapter %s of volume %s retrieved. Starting download...' % (chapter.chapter_number, chapter.volume)
             # brave_10/brave_10_v01/brave_10_v01_c01/brave_10_v01_c001_p001.jpg
             chapter_dir_name = chapter.chapter_number
             #volume_dir_name = '%s_%s' % (self.title, chapter.volume)
@@ -109,6 +109,7 @@ class MangafoxSpider(BaseSpider, QtGui.QWidget):
                 reqs.append(page_image_request)
 
             self.count += 1
+            # self.emit(QtCore.SIGNAL("progress(int)"), (self.count*100)/self.totalChapt)
             self.prog.setValue((self.count*100)/self.totalChapt)
             return reqs
 
@@ -122,8 +123,8 @@ class MangafoxSpider(BaseSpider, QtGui.QWidget):
 
         chapter.downloaded_images_count += 1
         #print chapter.downloaded_images_count, chapter.pages_count
-        if chapter.downloaded_images_count == chapter.pages_count -1:
-            print 'Chapter %s successfully downlaoded to %s.' % (chapter.chapter_number, chapter.storage_dir)
+        # if chapter.downloaded_images_count == chapter.pages_count -1:
+        #     print 'Chapter %s successfully downlaoded to %s.' % (chapter.chapter_number, chapter.storage_dir)
 
             # print 'Making CBZ...'
             # makecbz(chapter.storage_dir)
@@ -147,7 +148,7 @@ def create_crawler(spider):
     from scrapy.xlib.pydispatch import dispatcher
 
     def catch_item(sender, item, **kwargs):
-        print "Got:", item
+         print "Got:", item
 
     dispatcher.connect(catch_item, signal=signals.item_passed)
 
@@ -169,22 +170,22 @@ def create_crawler(spider):
 
 
 def main():
-    # parser = argparse.ArgumentParser(description='Downloads manga from Mangafox.')
-    # parser.add_argument('title', help='Title of the manga series to download.')
-    # params = parser.parse_args()
+    parser = argparse.ArgumentParser(description='Downloads manga from Mangafox.')
+    parser.add_argument('title', help='Title of the manga series to download.')
+    params = parser.parse_args()
     import sys
     app = QtGui.QApplication(sys.argv)
 
     # ex.showFullScreen()
 
-    spider = MangafoxSpider("tenkuu_shinpan")
+    spider = MangafoxSpider(params.title)
     spider.show()
     crawler = create_crawler(spider)
 
     # start engine scrapy/twisted
-    print 'Starting'
+    # print 'Starting'
     crawler.start()
-    print 'Successfully completed. Stopping.'
+    # print 'Successfully completed. Stopping.'
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
