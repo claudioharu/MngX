@@ -186,6 +186,7 @@ def main():
     # print 'Starting'
     crawler.start()
     # print 'Successfully completed. Stopping.'
+    spider.close()
     sys.exit(app.exec_())
 
 if __name__ == '__main__':

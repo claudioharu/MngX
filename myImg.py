@@ -248,9 +248,9 @@ class Ui_Form(QtGui.QMainWindow):
 		self.spacer = QtGui.QSpacerItem(508, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
 		self.spacer2 = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
 		
-		self.prog = QtGui.QProgressBar(Form) 
-		# QtCore.QObject.connect(self.prog, QtCore.SIGNAL("progress(int)"),self.progressBar, QtCore.SLOT("setValue(int)"), QtCore.Qt.DirectConnection)
-	 	QtCore.QObject.connect(self.spider, QtCore.SIGNAL("progress(int)"),self.prog, QtCore.SLOT("setValue(int)"), QtCore.Qt.QueuedConnection)
+		# self.prog = QtGui.QProgressBar(Form) 
+		# # QtCore.QObject.connect(self.prog, QtCore.SIGNAL("progress(int)"),self.progressBar, QtCore.SLOT("setValue(int)"), QtCore.Qt.DirectConnection)
+	 # 	QtCore.QObject.connect(self.spider, QtCore.SIGNAL("progress(int)"),self.prog, QtCore.SLOT("setValue(int)"), QtCore.Qt.QueuedConnection)
 
 
 		# Main window properties
@@ -278,7 +278,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.horizontalLayout_2.addWidget(self.spinBox)
 		self.horizontalLayout_2.addWidget(self.lineEdit)
 		self.horizontalLayout_2.addWidget(self.toolButton_8)
-		self.horizontalLayout_2.addWidget(self.prog)
+		# self.horizontalLayout_2.addWidget(self.prog)
 
 		self.verticalLayout.addLayout(self.horizontalLayout_2)
 		self.horizontalLayout_3 = QtGui.QHBoxLayout()
@@ -349,6 +349,7 @@ class Ui_Form(QtGui.QMainWindow):
 			print "filho"
 			import sys
 		
+			# os.system("python qpaint.py")
 			os.system("python foxy.py " + str(title))
 		
 		# 	self.spider = MangafoxSpider(title)
