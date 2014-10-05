@@ -57,9 +57,6 @@ class Ui_Form(QtGui.QMainWindow):
 				print "Chapter" + str(self.pathIndex)
 				self.path = self.paths[self.pathIndex]
 				
-			# else:
-			# 	# Acabou caps
-			# 	# Criar janela
 
 	def previousChapter(self):
 		print "previous"
@@ -220,7 +217,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.lineEdit.setFocusPolicy(QtCore.Qt.ClickFocus)
 		QtCore.QObject.connect(self.lineEdit, QtCore.SIGNAL('textChanged(QString)'), self.getManga)
 
-		# creating spinBox "chapters"
+		# creating spinBox "pages"
 		self.spinBox = QtGui.QSpinBox(Form)
 		self.spinBox.setGeometry(QtCore.QRect(0, 0, 113, 27))
 		self.spinBox.setMinimum(0)
@@ -232,7 +229,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.spinBox_2.setGeometry(QtCore.QRect(0, 0, 113, 27))
 		self.spinBox_2.setMinimum(0)
 		self.spinBox_2.setMaximum(1000)
-		#QtCore.QObject.connect(self.spinBox, QtCore.SIGNAL('valueChanged(int)'), self.changePageSpinBox)
+		QtCore.QObject.connect(self.spinBox_2, QtCore.SIGNAL('valueChanged(int)'), self.changeChapterSpinBox)
 
 		# creating thumbnails
 		self.win = QtGui.QWidget(Form)
@@ -248,11 +245,6 @@ class Ui_Form(QtGui.QMainWindow):
 		self.spacer = QtGui.QSpacerItem(508, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
 		self.spacer2 = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
 		
-		# self.prog = QtGui.QProgressBar(Form) 
-		# # QtCore.QObject.connect(self.prog, QtCore.SIGNAL("progress(int)"),self.progressBar, QtCore.SLOT("setValue(int)"), QtCore.Qt.DirectConnection)
-	 # 	QtCore.QObject.connect(self.spider, QtCore.SIGNAL("progress(int)"),self.prog, QtCore.SLOT("setValue(int)"), QtCore.Qt.QueuedConnection)
-
-
 		# Main window properties
 		self.widget = QtGui.QWidget(Form)
 		self.widget.setGeometry(QtCore.QRect(0, 0, 1366, 748))
@@ -318,7 +310,8 @@ class Ui_Form(QtGui.QMainWindow):
 		self.scaleImage(0.8)
 
 		self.setSpinBoxMaximum()
-#		self.spinBox_2.setMaximum(len(self.paths)-1)
+		if(len(self.paths) > 0):
+			self.spinBox_2.setMaximum(len(self.paths)-1)
 
 
 	# Get manga's name
@@ -352,20 +345,9 @@ class Ui_Form(QtGui.QMainWindow):
 			# os.system("python qpaint.py")
 			os.system("python foxy.py " + str(title))
 		
-		# 	self.spider = MangafoxSpider(title)
-		# 	# spider.show()
-		# 	crawler = create_crawler(self.spider)
 
-		# 	# # start engine scrapy/twisted
-		# 	print 'Starting'
-		# 	crawler.start()
-		# 	print 'Successfully completed. Stopping.'
-		# 	# splider.close()
 			os._exit(0)  
 
-		# else:
-		# 	pids = (os.getpid(), newpid)
-		# 	print "parent: %d, child: %d" % pids
 
 		# self.spinBox_2.setMaximum(len(self.paths)-1)
 
@@ -382,8 +364,7 @@ class Ui_Form(QtGui.QMainWindow):
 			self.increasePressed = False
 			self.decreasePressed = True
 			self.showFullScreen()
-		# else:
-		# 	print "i cant increase"
+
 
 	def decrease(self):
 		# print "decrease"
@@ -448,6 +429,22 @@ class Ui_Form(QtGui.QMainWindow):
 		self.scrollArea.horizontalScrollBar().setValue(0)
 		# handling zoom
 		self.scaleFactor = 1.0
+
+
+	def changeChapterSpinBox(self, value):
+		print value
+		self.pathIndex = value
+		print "Chapter" + str(self.pathIndex)
+		self.path = self.paths[self.pathIndex]
+
+		self.thumb._update(self.path)
+		self.chapters = self._images()
+		
+		if(self.page == 0):
+			self.changePageSpinBox(self.page)
+		else:
+			self.page = 0
+			self.spinBox.setProperty("value", self.page)
 
 	# Verificar
 	def changePageSpinBox(self,value):
@@ -558,12 +555,6 @@ class Ui_Form(QtGui.QMainWindow):
 		#scale image
 		self.scaleImage(0.8)
 		self.scaleImage(0.8)
-
-	# def changes(self):
-		# self.window = teste.Ui_Dialog()
-		# self.window.name = self.strPage
-		# print(self.window.name)
-		# self.window.show()
 	
 	def zoomIn(self):
 		self.scaleImage(1.25)
@@ -607,8 +598,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.lightInAct.setEnabled(not self.exitAct.isChecked())
 		# self.Changes.setEnabled(not self.exitAct.isChecked())
 		
-	#def scaleImage(self, factor):
-	#	self.zoomInAct.setEnabled(self.scaleFactor < 3.0)
+
 
 
 	def createMenus(self):
@@ -667,10 +657,7 @@ if __name__ == '__main__':
 	app = QtGui.QApplication(sys.argv)
 	ex = Ui_Form()
 
-#	p = ex.palette()
-#	p.setColor(ex.backgroundRole(), QtCore.Qt.black)
-#	ex.setPalette(p)
 	ex.showMaximized()
-#	ex.showFullScreen()
+
 	sys.exit(app.exec_())
 
