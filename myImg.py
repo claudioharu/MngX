@@ -56,6 +56,7 @@ class Ui_Form(QtGui.QMainWindow):
 				self.pathIndex += 1
 				print "Chapter" + str(self.pathIndex)
 				self.path = self.paths[self.pathIndex]
+				self.spinBox_2.setValue(self.pathIndex)
 				
 
 	def previousChapter(self):
@@ -288,7 +289,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.updateActions()
 
 		self.retranslateUi(Form)
-
+		self.setWindowIcon(QtGui.QIcon("icons/mangaYouIcon.png"))
 		QtCore.QMetaObject.connectSlotsByName(Form)
 
 	def retranslateUi(self, Form):
@@ -338,14 +339,13 @@ class Ui_Form(QtGui.QMainWindow):
 		# self.thread.run()
 
 		newpid = os.fork()
+		pid = os.getpid()
 		if newpid == 0:
 			print "filho"
 			import sys
 		
 			# os.system("python qpaint.py")
 			os.system("python foxy.py " + str(title))
-		
-
 			os._exit(0)  
 
 
@@ -439,7 +439,7 @@ class Ui_Form(QtGui.QMainWindow):
 
 		self.thumb._update(self.path)
 		self.chapters = self._images()
-		
+			
 		if(self.page == 0):
 			self.changePageSpinBox(self.page)
 		else:
@@ -579,7 +579,10 @@ class Ui_Form(QtGui.QMainWindow):
 		self.NextPage = QtGui.QAction("Next", self,shortcut="right", enabled=False, triggered=self.nextPage)
 		self.PreviousPage = QtGui.QAction("Previous", self,shortcut="left", enabled=False, triggered=self.previousPage)
 		# self.Changes = QtGui.QAction("Image Settings", self,shortcut="Ctrl+T", enabled=False, triggered=self.changes)
-		 
+		
+		# Paint
+		self.paintAct = QtGui.QAction("Paint", self, triggered=self.Paint)
+
 		#About MangaYou
 		self.aboutAct = QtGui.QAction("&About", self, triggered=self.about)
 
@@ -596,18 +599,11 @@ class Ui_Form(QtGui.QMainWindow):
 		self.NextPage.setEnabled(not self.exitAct.isChecked())
 		self.PreviousPage.setEnabled(not self.exitAct.isChecked())
 		self.lightInAct.setEnabled(not self.exitAct.isChecked())
-		# self.Changes.setEnabled(not self.exitAct.isChecked())
-		
-
-
 
 	def createMenus(self):
 
 		#File Functions
 		self.fileMenu = QtGui.QMenu("&File", self)
-		#self.fileMenu.addAction(self.openAct)
-		#self.fileMenu.addAction(self.printAct)
-		#self.fileMenu.addSeparator()
 		self.fileMenu.addAction(self.exitAct)
 
 		#View Functions
@@ -620,7 +616,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.viewMenu.addAction(self.PreviousPage)
 		self.viewMenu.addAction(self.lightInAct)
 		self.viewMenu.addSeparator()
-		# self.viewMenu.addAction(self.Changes)
+		self.viewMenu.addAction(self.paintAct)
 		
 		#About MangaYou
 		self.helpMenu = QtGui.QMenu("&Help", self)
@@ -648,12 +644,15 @@ class Ui_Form(QtGui.QMainWindow):
 		QtGui.QMessageBox.about(self, "About MangaYou",
         	"<p>The <b>MangaYou</b>")
 			
+	def Paint(self):
+		import myPaint
+		m = myPaint.MainWindow()
+		m.show()
 		
 
 if __name__ == '__main__':
  
 	import sys
-
 	app = QtGui.QApplication(sys.argv)
 	ex = Ui_Form()
 

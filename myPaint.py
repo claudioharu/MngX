@@ -117,8 +117,8 @@ class MainWindow(QtGui.QMainWindow):
         self.exitAct = QtGui.QAction("E&xit", self, shortcut="Ctrl+Q", triggered=self.close)
         self.penColorAct = QtGui.QAction("&Pen Color...", self, icon=QtGui.QIcon('icons/pencolor.png'),triggered=self.penColor)
         self.penWidthAct = QtGui.QAction("Pen &Width...", self, icon=QtGui.QIcon('icons/pensize.png'), triggered=self.penWidth)
-        self.clearScreenAct = QtGui.QAction("&Clear Screen", self, icon=QtGui.QIcon('icon/clear.png'), shortcut="Ctrl+L", triggered=self.paintArea.clearImage)
-        self.aboutAct = QtGui.QAction("&About", self, icon=QtGui.QIcon('icon/about.png'), shortcut="F1", triggered=self.about)
+        self.clearScreenAct = QtGui.QAction("&Clear Screen", self, icon=QtGui.QIcon('icons/clear.png'), shortcut="Ctrl+L", triggered=self.paintArea.clearImage)
+        self.aboutAct = QtGui.QAction("&About", self, shortcut="F1", triggered=self.about)
         self.aboutAct.setStatusTip('About program')
 
         self.pen = QtGui.QAction("", self, icon=QtGui.QIcon('icons/pen.png'), triggered=self.setPen)
@@ -130,8 +130,8 @@ class MainWindow(QtGui.QMainWindow):
         self.zoomIn = QtGui.QAction("", self, icon=QtGui.QIcon('icons/zoom_in.png'), triggered=self.zoomIn)
         self.zoomOut = QtGui.QAction("", self, icon=QtGui.QIcon('icons/zoom_out.png'), triggered=self.zoomOut)
         self.eraser = QtGui.QAction("", self, icon=QtGui.QIcon('icons/erase.png'), triggered=self.setEraser)
-        self.mirror_w = QtGui.QAction("", self, icon=QtGui.QIcon('icon/mirror-w.png'), triggered=self.setMirror_w)
-        self.mirror_h = QtGui.QAction("", self, icon=QtGui.QIcon('icon/mirror-h.png'), triggered=self.setMirror_h)
+        self.mirror_w = QtGui.QAction("", self, icon=QtGui.QIcon('icons/mirror-w.png'), triggered=self.setMirror_w)
+        self.mirror_h = QtGui.QAction("", self, icon=QtGui.QIcon('icons/mirror-h.png'), triggered=self.setMirror_h)
 
     def save(self):
         action = self.sender()
