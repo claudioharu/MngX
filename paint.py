@@ -14,15 +14,15 @@ class paintArea(QtGui.QWidget):
         super(paintArea, self).__init__(parent)
 
         self.autoFillBackground = True
-        self.myPenWidth = 4
-        self.myPenColor = QtGui.QColor(100, 100, 100, 255)
+        self.pWidth = 4
+        self.pColor = QtGui.QColor(100, 100, 100, 255)
         imageSize = QtCore.QSize(800, 500)
         self.image = QtGui.QImage(imageSize, QtGui.QImage.Format_RGB32)
         self.tempImage = QtGui.QImage(imageSize, QtGui.QImage.Format_ARGB32)
         self.imagePreview = QtGui.QImage(imageSize, QtGui.QImage.Format_ARGB32)
         self.lastPoint = QtCore.QPoint()        
-        self.size_w = 800
-        self.size_h = 500
+        self.sizew = 800
+        self.sizeh = 500
 
 
     def openImage(self, fileName):
@@ -32,22 +32,22 @@ class paintArea(QtGui.QWidget):
 
         
         self.image = loadedImage.convertToFormat(QtGui.QImage.Format_RGB32)  
-        self.size_h = self.image.height()
-        self.size_w = self.image.width()
+        self.sizeh = self.image.height()
+        self.sizew = self.image.width()
 
         self.image = self.image.scaled(self.image.width()*.75, self.image.height()*.75)        
-        self.size_w *= .75
-        self.size_h *= .75
-        self.setMinimumSize(self.size_w, self.size_h)
-        self.setMaximumSize(self.size_w, self.size_h)
-        self.imagePreview = self.imagePreview.scaled(self.size_w, self.size_h)
+        self.sizew *= .75
+        self.sizeh *= .75
+        self.setMinimumSize(self.sizew, self.sizeh)
+        self.setMaximumSize(self.sizew, self.sizeh)
+        self.imagePreview = self.imagePreview.scaled(self.sizew, self.sizeh)
 
         self.image = self.image.scaled(self.image.width()*.75, self.image.height()*.75)        
-        self.size_w *= .75
-        self.size_h *= .75
-        self.setMinimumSize(self.size_w, self.size_h)
-        self.setMaximumSize(self.size_w, self.size_h)
-        self.imagePreview = self.imagePreview.scaled(self.size_w, self.size_h)
+        self.sizew *= .75
+        self.sizeh *= .75
+        self.setMinimumSize(self.sizew, self.sizeh)
+        self.setMaximumSize(self.sizew, self.sizeh)
+        self.imagePreview = self.imagePreview.scaled(self.sizew, self.sizeh)
 
         self.setMinimumSize(self.image.size())
         self.setMaximumSize(self.image.size())
@@ -64,11 +64,30 @@ class paintArea(QtGui.QWidget):
             return False
 
     def setPenColor(self, newColor):
-        self.myPenColor = newColor
+        self.pColor = newColor
 
     def setPenWidth(self, newWidth):
-        self.myPenWidth = newWidth
+        self.pWidth = newWidth
 
+
+    def zoomIn(self):
+        self.image = self.image.scaled(self.image.width()*1.25, self.image.height()*1.25)
+        self.sizew *= 1.25
+        self.sizeh *= 1.25
+        self.setMinimumSize(self.sizew, self.sizeh)
+        self.setMaximumSize(self.sizew, self.sizeh)
+        self.imagePreview = self.imagePreview.scaled(self.sizew, self.sizeh)
+        self.update()
+
+    def zoomOut(self):
+        self.image = self.image.scaled(self.image.width()*.75, self.image.height()*.75)        
+        self.sizew *= .75
+        self.sizeh *= .75
+        self.setMinimumSize(self.sizew, self.sizeh)
+        self.setMaximumSize(self.sizew, self.sizeh)
+        self.imagePreview = self.imagePreview.scaled(self.sizew, self.sizeh)
+        self.update()
+    
     def clearImage(self):
         self.image.fill(QtGui.qRgb(255, 255, 255))
         self.modified = True
@@ -112,7 +131,7 @@ class paintArea(QtGui.QWidget):
         
         painter = QtGui.QPainter(self.image)
         
-        painter.setPen(QtGui.QPen(self.myPenColor, self.myPenWidth, QtCore.Qt.SolidLine, QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
+        painter.setPen(QtGui.QPen(self.pColor, self.pWidth, QtCore.Qt.SolidLine, QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
         painter.setClipping(True)
                     
         painter.setRenderHint(QtGui.QPainter.SmoothPixmapTransform, True)
@@ -141,7 +160,7 @@ class paintArea(QtGui.QWidget):
                         
         painter = QtGui.QPainter(self.imagePreview)
         
-        painter.setPen(QtGui.QPen(self.myPenColor, self.myPenWidth, QtCore.Qt.SolidLine, QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
+        painter.setPen(QtGui.QPen(self.pColor, self.pWidth, QtCore.Qt.SolidLine, QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
         painter.setClipping(True)
                     
         painter.setRenderHint(QtGui.QPainter.SmoothPixmapTransform, True)
@@ -163,23 +182,7 @@ class paintArea(QtGui.QWidget):
         self.image = self.image.mirrored(True, False)        
         self.update()
         
-    def zoomIn(self):
-        self.image = self.image.scaled(self.image.width()*1.25, self.image.height()*1.25)
-        self.size_w *= 1.25
-        self.size_h *= 1.25
-        self.setMinimumSize(self.size_w, self.size_h)
-        self.setMaximumSize(self.size_w, self.size_h)
-        self.imagePreview = self.imagePreview.scaled(self.size_w, self.size_h)
-        self.update()
     
-    def zoomOut(self):
-        self.image = self.image.scaled(self.image.width()*.75, self.image.height()*.75)        
-        self.size_w *= .75
-        self.size_h *= .75
-        self.setMinimumSize(self.size_w, self.size_h)
-        self.setMaximumSize(self.size_w, self.size_h)
-        self.imagePreview = self.imagePreview.scaled(self.size_w, self.size_h)
-        self.update()
 
     def swapPixel(self):
         self.image = self.image.rgbSwapped()
@@ -195,26 +198,12 @@ class paintArea(QtGui.QWidget):
     
         self.image = newImage
 
-    def print_(self):
-        printer = QtGui.QPrinter(QtGui.QPrinter.HighResolution)
-
-        printDialog = QtGui.QPrintDialog(printer, self)
-        if printDialog.exec_() == QtGui.QDialog.Accepted:
-            painter = QtGui.QPainter(printer)
-            rect = painter.viewport()
-            size = self.image.size()
-            size.scale(rect.size(), QtCore.Qt.KeepAspectRatio)
-            painter.setViewport(rect.x(), rect.y(), size.width(), size.height())
-            painter.setWindow(self.image.rect())
-            painter.drawImage(0, 0, self.image)
-            painter.end()
-
     def isModified(self):
         return self.modified
 
     def penColor(self):
-        return self.myPenColor
+        return self.pColor
 
     def penWidth(self):
-        return self.myPenWidth
+        return self.pWidth
 

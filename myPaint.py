@@ -26,25 +26,52 @@ class MainWindow(QtGui.QMainWindow):
 
         self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setBackgroundRole(QtGui.QPalette.Dark)        
-        #self.scrollArea.setWidget(self.paintArea)
-        #self.setCentralWidget(self.scrollArea)
-        
+
         self.createActions()
-        self.createMenus()
+
+        self.saveAsMenu = QtGui.QMenu("&Save As", self)
+        for action in self.saveAsActs:
+            self.saveAsMenu.addAction(action)
+
+        fileMenu = QtGui.QMenu("&File", self)
+        fileMenu.addAction(self.openImage)
+        fileMenu.addMenu(self.saveAsMenu)
+        fileMenu.addSeparator()
+        fileMenu.addAction(self.exitAct)
+
+        editMenu = QtGui.QMenu("&Edit", self)
+        editMenu.addAction(self.penColorAct)
+        editMenu.addAction(self.penWidthAct)
+        editMenu.addSeparator()
+        editMenu.addAction(self.clearScreenAct)
+
+        helpMenu = QtGui.QMenu("&Help", self)
+        helpMenu.addAction(self.aboutAct)
+
+        self.menuBar().addMenu(fileMenu)
+        self.menuBar().addMenu(editMenu)
+        self.menuBar().addMenu(helpMenu)
+        
+        #toolbar and actions:
+        self.toolbar = self.addToolBar('toolbar')
+        self.toolbar.addAction(self.pen)
+        self.toolbar.addAction(self.line)
+        self.toolbar.addAction(self.PenWidth)
+        self.toolbar.addAction(self.PenColor)
+        self.toolbar.addAction(self.eraser)
+        self.toolbar.addSeparator()
+        self.toolbar.addAction(self.zoomIn)
+        self.toolbar.addAction(self.zoomOut)        
+        self.toolbar.addSeparator()
+        self.toolbar.addAction(self.mirror_w)
+        self.toolbar.addAction(self.mirror_h)
+
 
         self.setWindowTitle("Paint")
         # self.setWindowIcon(QtGui.QIcon("icon/paint.png"))
         self.setGeometry(300, 100, 600, 600)
-        self.resize(self.paintArea.size_w, self.paintArea.size_h+85)
+        self.resize(self.paintArea.sizew, self.paintArea.sizeh+85)
         self.statusBar()
-
-
-    def closeEvent(self, event):
-        if self.maybeSave():
-            event.accept()
-        else:
-            event.ignore()
-
 
     def open(self):
         if self.maybeSave():
@@ -54,6 +81,26 @@ class MainWindow(QtGui.QMainWindow):
                 self.paintArea.openImage(fileName)
         
 
+    def zoomIn(self):
+        self.paintArea.zoomIn()
+
+    def zoomOut(self):
+        self.paintArea.zoomOut()
+
+    def setPen(self):
+        self.paintArea.setTool('pen')
+        
+    def setLine(self):
+        self.paintArea.setTool('line')
+
+    def setEraser(self):
+        self.paintArea.setTool('eraser')
+        
+    def setMirror_w(self):
+        self.paintArea.mirror_w()
+        
+    def setMirror_h(self):
+        self.paintArea.mirror_h()
 
     def createActions(self):
     
@@ -67,64 +114,24 @@ class MainWindow(QtGui.QMainWindow):
             self.saveAsActs.append(action)
 
         #menu actions:
-        self.printAct = QtGui.QAction("&Print...", self, icon=QtGui.QIcon('png/print.png'), triggered=self.paintArea.print_)
         self.exitAct = QtGui.QAction("E&xit", self, shortcut="Ctrl+Q", triggered=self.close)
-        self.penColorAct = QtGui.QAction("&Pen Color...", self, icon=QtGui.QIcon('icon/pencolor.png'),triggered=self.penColor)
-        self.penWidthAct = QtGui.QAction("Pen &Width...", self, icon=QtGui.QIcon('icon/pensize.png'), triggered=self.penWidth)
+        self.penColorAct = QtGui.QAction("&Pen Color...", self, icon=QtGui.QIcon('icons/pencolor.png'),triggered=self.penColor)
+        self.penWidthAct = QtGui.QAction("Pen &Width...", self, icon=QtGui.QIcon('icons/pensize.png'), triggered=self.penWidth)
         self.clearScreenAct = QtGui.QAction("&Clear Screen", self, icon=QtGui.QIcon('icon/clear.png'), shortcut="Ctrl+L", triggered=self.paintArea.clearImage)
         self.aboutAct = QtGui.QAction("&About", self, icon=QtGui.QIcon('icon/about.png'), shortcut="F1", triggered=self.about)
         self.aboutAct.setStatusTip('About program')
-        # self.aboutQtAct = QtGui.QAction("About &Qt", self, icon=QtGui.QIcon('icon/qt.png'), shortcut="F2", triggered=QtGui.qApp.aboutQt)
-        #self.fillRect = QtGui.QAction("", self, icon=QtGui.QIcon('png/a.png'))
 
-        self.pen = QtGui.QAction("", self, icon=QtGui.QIcon('icon/pen.png'), triggered=self.setPen)
+        self.pen = QtGui.QAction("", self, icon=QtGui.QIcon('icons/pen.png'), triggered=self.setPen)
         self.pen.setStatusTip('using pen')
         
-        self.line = QtGui.QAction("", self, icon=QtGui.QIcon('icon/line.png'), triggered=self.setLine)
+        self.line = QtGui.QAction("", self, icon=QtGui.QIcon('icons/line.png'), triggered=self.setLine)
+        self.PenWidth = QtGui.QAction("", self, icon=QtGui.QIcon('icons/pensize.png'), triggered=self.penWidth)
+        self.PenColor = QtGui.QAction("", self, icon=QtGui.QIcon('icons/pencolor.png'), triggered=self.penColor)
         self.zoomIn = QtGui.QAction("", self, icon=QtGui.QIcon('icons/zoom_in.png'), triggered=self.zoomIn)
         self.zoomOut = QtGui.QAction("", self, icon=QtGui.QIcon('icons/zoom_out.png'), triggered=self.zoomOut)
-        self.eraser = QtGui.QAction("", self, icon=QtGui.QIcon('icon/eraser.png'), triggered=self.setEraser)
+        self.eraser = QtGui.QAction("", self, icon=QtGui.QIcon('icons/erase.png'), triggered=self.setEraser)
         self.mirror_w = QtGui.QAction("", self, icon=QtGui.QIcon('icon/mirror-w.png'), triggered=self.setMirror_w)
         self.mirror_h = QtGui.QAction("", self, icon=QtGui.QIcon('icon/mirror-h.png'), triggered=self.setMirror_h)
-
-    def createMenus(self):
-    
-        self.saveAsMenu = QtGui.QMenu("&Save As", self)
-        for action in self.saveAsActs:
-            self.saveAsMenu.addAction(action)
-
-        fileMenu = QtGui.QMenu("&File", self)
-        fileMenu.addAction(self.openImage)
-        fileMenu.addMenu(self.saveAsMenu)
-        fileMenu.addAction(self.printAct)
-        fileMenu.addSeparator()
-        fileMenu.addAction(self.exitAct)
-
-        editMenu = QtGui.QMenu("&Edit", self)
-        editMenu.addAction(self.penColorAct)
-        editMenu.addAction(self.penWidthAct)
-        editMenu.addSeparator()
-        editMenu.addAction(self.clearScreenAct)
-
-        helpMenu = QtGui.QMenu("&Help", self)
-        helpMenu.addAction(self.aboutAct)
-        # helpMenu.addAction(self.aboutQtAct)
-
-        self.menuBar().addMenu(fileMenu)
-        self.menuBar().addMenu(editMenu)
-        self.menuBar().addMenu(helpMenu)
-        
-        #toolbar and actions:
-        self.toolbar = self.addToolBar('toolbar')
-        self.toolbar.addAction(self.pen)
-        self.toolbar.addAction(self.line)
-        self.toolbar.addAction(self.eraser)
-        self.toolbar.addSeparator()
-        self.toolbar.addAction(self.zoomIn)
-        self.toolbar.addAction(self.zoomOut)        
-        self.toolbar.addSeparator()
-        self.toolbar.addAction(self.mirror_w)
-        self.toolbar.addAction(self.mirror_h)
 
     def save(self):
         action = self.sender()
@@ -175,32 +182,11 @@ class MainWindow(QtGui.QMainWindow):
             return self.paintArea.saveImage(fileName, fileFormat)
 
         return False
-
-    def zoomIn(self):
-        self.paintArea.zoomIn()
-
-    def zoomOut(self):
-        self.paintArea.zoomOut()
-
-    def setPen(self):
-        self.paintArea.setTool('pen')
-        
-    def setLine(self):
-        self.paintArea.setTool('line')
-
-    def setEraser(self):
-        self.paintArea.setTool('eraser')
-        
-    def setMirror_w(self):
-        self.paintArea.mirror_w()
-        
-    def setMirror_h(self):
-        self.paintArea.mirror_h()
                 
 def main():
     app = QtGui.QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
+    ex = MainWindow()
+    ex.showMaximized()
     sys.exit(app.exec_())
 
 if __name__ == '__main__':

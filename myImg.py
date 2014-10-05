@@ -670,7 +670,7 @@ if __name__ == '__main__':
 #	p = ex.palette()
 #	p.setColor(ex.backgroundRole(), QtCore.Qt.black)
 #	ex.setPalette(p)
-	ex.show()
+	ex.showMaximized()
 #	ex.showFullScreen()
 	sys.exit(app.exec_())
 
