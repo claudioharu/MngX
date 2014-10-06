@@ -28,7 +28,7 @@ class Ui_Form(QtGui.QMainWindow):
 		self.paths = self._paths()
 		self.flagChangeSpinBox = True
 
-		self.spider = QtGui.QWidget()
+		# self.spider = QtGui.QWidget()
 
 		self.updatePath()
 		self.chapters = self._images()
@@ -271,7 +271,12 @@ class Ui_Form(QtGui.QMainWindow):
 		self.horizontalLayout_2.addWidget(self.spinBox)
 		self.horizontalLayout_2.addWidget(self.lineEdit)
 		self.horizontalLayout_2.addWidget(self.toolButton_8)
-		# self.horizontalLayout_2.addWidget(self.prog)
+		
+
+		self.progressBar = QtGui.QProgressBar(Form)
+		self.progressBar.setProperty("value", 1)
+		
+		self.horizontalLayout_2.addWidget(self.progressBar)
 
 		self.verticalLayout.addLayout(self.horizontalLayout_2)
 		self.horizontalLayout_3 = QtGui.QHBoxLayout()
@@ -317,8 +322,10 @@ class Ui_Form(QtGui.QMainWindow):
 
 	# Get manga's name
 	def getManga(self, title):
-		self.manga = title
 		print self.manga
+		if(title != ""):
+			self.manga = title
+			print self.manga
 
 	# Start the download
 	def download(self):
@@ -334,24 +341,47 @@ class Ui_Form(QtGui.QMainWindow):
 		title = self.manga
 		self.lineEdit.clear()
 		self.imageLabel.setFocus()
-		# self.thread = Thread()
-		# self.thread.setTitle(title)
-		# self.thread.run()
 
-		newpid = os.fork()
-		pid = os.getpid()
-		if newpid == 0:
-			print "filho"
-			import sys
+		import Thread
+		self.thread = Thread.Thread()
+		self.thread.notifyProgress.connect(self.setProgress)
+		self.thread.setTitle(title)
+		self.thread.start()
+
+		# newpid = os.fork()
+		# pid = os.getpid()
+		# if newpid == 0:
+		# 	print "filho"
+		# 	import sys
 		
-			# os.system("python qpaint.py")
-			os.system("python foxy.py " + str(title))
-			os._exit(0)  
+		# 	# os.system("python qpaint.py")
+		# 	os.system("python foxy.py " + str(title))
+		# 	os._exit(0)  
 
 
 		# self.spinBox_2.setMaximum(len(self.paths)-1)
 
-		
+	def setProgress(self, progress):
+		self.progressBar.setValue(progress)
+		print "Progress value: " + str(progress)
+
+		if(progress == 100):
+			self.paths = self._paths()
+			self.pathIndex = 0
+			self.updatePath()
+			self.chapters = self._images()
+			self.page = 0
+
+			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
+			self.imageLabel.adjustSize()
+			self.thumb.item(self.page).setSelected(True)
+
+			# scale image
+			self.scaleImage(0.8)
+			self.scaleImage(0.8)
+
+
+
 
 	def increase(self):
 		# print "increase"
