@@ -51,8 +51,10 @@ class Ui_Form(QtGui.QMainWindow):
 
 	def nextChapter(self):
 		print "next"
+		print self.pathIndex
+		print len(self.paths)
 		if self.paths:
-			if self.pathIndex < len(self.paths): 
+			if self.pathIndex < len(self.paths)-1: 
 				self.pathIndex += 1
 				print "Chapter" + str(self.pathIndex)
 				self.path = self.paths[self.pathIndex]
@@ -67,6 +69,7 @@ class Ui_Form(QtGui.QMainWindow):
 				self.pathIndex -= 1
 				print "Chapter" + str(self.pathIndex)
 				self.path = self.paths[self.pathIndex]
+				self.spinBox_2.setValue(self.pathIndex)	
 				
 	def _paths(self):
 		path = os.getcwd() + "/" + self.manga + "/"
@@ -318,6 +321,8 @@ class Ui_Form(QtGui.QMainWindow):
 		self.setSpinBoxMaximum()
 		if(len(self.paths) > 0):
 			self.spinBox_2.setMaximum(len(self.paths)-1)
+		else:
+			self.spinBox_2.setMaximum(0)
 
 
 	# Get manga's name
@@ -374,11 +379,20 @@ class Ui_Form(QtGui.QMainWindow):
 
 			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 			self.imageLabel.adjustSize()
+			self.setSpinBoxMaximum()
+			if(len(self.paths) > 0):
+				self.spinBox_2.setMaximum(len(self.paths)-1)
+			else:
+				self.spinBox_2.setMinimum(0)
+
+			# Treating thumbnails
+			self.thumb._update(self.path)
+			self.thumb._scroll(self.page)
 			self.thumb.item(self.page).setSelected(True)
 
 			# scale image
-			self.scaleImage(0.8)
-			self.scaleImage(0.8)
+			# self.scaleImage(0.8)
+			# self.scaleImage(0.8)
 
 
 
@@ -535,7 +549,7 @@ class Ui_Form(QtGui.QMainWindow):
 
 				self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 				self.imageLabel.adjustSize()
-
+				
 			else:
 				print (self.chapters[self.page])
 				self.thumb.item(self.page).setSelected(True)
