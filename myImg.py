@@ -276,10 +276,9 @@ class Ui_Form(QtGui.QMainWindow):
 		self.horizontalLayout_2.addWidget(self.toolButton_8)
 		
 
-		self.progressBar = QtGui.QProgressBar(Form)
-		self.progressBar.setProperty("value", 1)
+
 		
-		self.horizontalLayout_2.addWidget(self.progressBar)
+		# self.horizontalLayout_2.addWidget(self.progressBar)
 
 		self.verticalLayout.addLayout(self.horizontalLayout_2)
 		self.horizontalLayout_3 = QtGui.QHBoxLayout()
@@ -334,6 +333,9 @@ class Ui_Form(QtGui.QMainWindow):
 
 	# Start the download
 	def download(self):
+		self.progressBar = QtGui.QProgressBar(self)
+		self.progressBar.setProperty("value", 1)
+		self.horizontalLayout_2.addWidget(self.progressBar)
 		# Treating titles
 		title = self.manga.split(" ")
 		self.manga = ""
@@ -384,6 +386,12 @@ class Ui_Form(QtGui.QMainWindow):
 			self.thumb._scroll(self.page)
 			self.thumb.item(self.page).setSelected(True)
 
+
+			b = self.horizontalLayout_2.takeAt(12)
+			b.widget().deleteLater()
+			# w = b.widget()
+			# w.setParent(None)	
+			# del b
 
 	def increase(self):
 		# print "increase"
