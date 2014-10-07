@@ -353,19 +353,6 @@ class Ui_Form(QtGui.QMainWindow):
 		self.thread.setTitle(title)
 		self.thread.start()
 
-		# newpid = os.fork()
-		# pid = os.getpid()
-		# if newpid == 0:
-		# 	print "filho"
-		# 	import sys
-		
-		# 	# os.system("python qpaint.py")
-		# 	os.system("python foxy.py " + str(title))
-		# 	os._exit(0)  
-
-
-		# self.spinBox_2.setMaximum(len(self.paths)-1)
-
 	def setProgress(self, progress):
 		self.progressBar.setValue(progress)
 		print "Progress value: " + str(progress)
@@ -377,8 +364,15 @@ class Ui_Form(QtGui.QMainWindow):
 			self.chapters = self._images()
 			self.page = 0
 
+			self.resetScroll()
+
 			self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 			self.imageLabel.adjustSize()
+
+			# scale image
+			self.scaleImage(0.8)
+			self.scaleImage(0.8)
+			
 			self.setSpinBoxMaximum()
 			if(len(self.paths) > 0):
 				self.spinBox_2.setMaximum(len(self.paths)-1)
@@ -389,12 +383,6 @@ class Ui_Form(QtGui.QMainWindow):
 			self.thumb._update(self.path)
 			self.thumb._scroll(self.page)
 			self.thumb.item(self.page).setSelected(True)
-
-			# scale image
-			# self.scaleImage(0.8)
-			# self.scaleImage(0.8)
-
-
 
 
 	def increase(self):
@@ -408,7 +396,6 @@ class Ui_Form(QtGui.QMainWindow):
 			self.increasePressed = False
 			self.decreasePressed = True
 			self.showFullScreen()
-
 
 	def decrease(self):
 		# print "decrease"
@@ -473,7 +460,6 @@ class Ui_Form(QtGui.QMainWindow):
 		self.scrollArea.horizontalScrollBar().setValue(0)
 		# handling zoom
 		self.scaleFactor = 1.0
-
 
 	def changeChapterSpinBox(self, value):
 		print value
@@ -557,6 +543,7 @@ class Ui_Form(QtGui.QMainWindow):
 				self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
 				self.imageLabel.adjustSize()
 
+			print "escalei"
 			#scale image
 			self.scaleImage(0.8)
 			self.scaleImage(0.8)

@@ -44,7 +44,7 @@ class Thread(QtCore.QThread):
         # print self
         # for i in range (0,101):
         #     self.notifyProgress.emit(i)
-        self.download_manga(self.title)
+        self.downloadMangas(self.title)
 
     def get_page_soup(self,url):
         """Download a page and return a BeautifulSoup object of the html"""
@@ -52,7 +52,7 @@ class Thread(QtCore.QThread):
             return BeautifulSoup(html_file.read())
 
 
-    def get_chapter_urls(self, manga_name):
+    def getChapterUrls(self, manga_name):
         """Get the chapter list for a manga"""
         replace = lambda s, k: s.replace(k, '_')
         manga_url = reduce(replace, [' ', '-'], manga_name.lower())
@@ -82,19 +82,19 @@ class Thread(QtCore.QThread):
         return chapters
 
 
-    def get_page_numbers(self,soup):
+    def getPagesNumbers(self,soup):
         # """Return the list of page numbers from the parsed page"""
         raw = soup.findAll('select', {'class': 'm'})[0]
         return (html['value'] for html in raw.findAll('option'))
 
 
-    def get_chapter_image_urls(self,url_fragment):
+    def getChaptersImageUrls(self,url_fragment):
         """Find all image urls of a chapter and return them"""
         print('Getting chapter urls')
         url_fragment = os.path.dirname(url_fragment) + '/'
         chapter_url = url_fragment
         chapter = self.get_page_soup(chapter_url)
-        pages = self.get_page_numbers(chapter)
+        pages = self.getPagesNumbers(chapter)
         image_urls = []
         print('Getting image urls...')
         for page in pages:
@@ -108,12 +108,12 @@ class Thread(QtCore.QThread):
         return image_urls
 
 
-    def get_chapter_number(self,url_fragment):
+    def getChaptersNumber(self,url_fragment):
         """Parse the url fragment and return the chapter number."""
         return ''.join(url_fragment.rsplit("/")[5:-1])
 
 
-    def download_urls(self,image_urls, manga_name, chapter_number):
+    def downloadUrls(self,image_urls, manga_name, chapter_number):
         """Download all images from a list"""
         download_dir = '{0}/{1}/'.format(manga_name, chapter_number)
         if os.path.exists(download_dir):
@@ -124,19 +124,19 @@ class Thread(QtCore.QThread):
             # print('Downloading {0} to {1}'.format(url, filename))
             urllib.urlretrieve(url, filename)
 
-    def download_manga(self, manga_name, chapter_number=None):
+    def downloadMangas(self, manga_name, chapter_number=None):
         """Download all chapters of a manga"""
-        chapter_urls = self.get_chapter_urls(manga_name)
+        chapter_urls = self.getChapterUrls(manga_name)
         self.total = len(chapter_urls)
         print "total " + str(self.total)
         self.i = 1.
         for chapter_number, url_fragment in chapter_urls.iteritems():
-            chapter_number = self.get_chapter_number(url_fragment)
+            chapter_number = self.getChaptersNumber(url_fragment)
             # print('===============================================')
             # print('Chapter ' + chapter_number)
             # print('===============================================')
-            image_urls = self.get_chapter_image_urls(url_fragment)
-            self.download_urls(image_urls, manga_name, chapter_number)
+            image_urls = self.getChaptersImageUrls(url_fragment)
+            self.downloadUrls(image_urls, manga_name, chapter_number)
             download_dir = './{0}/{1}'.format(manga_name, chapter_number)
             value = (self.i/self.total)*100.
             self.notifyProgress.emit(int(value))
