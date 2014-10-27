@@ -7,7 +7,6 @@ import teste
 import os
 import glob
 import thumbnails
-from foxy import *
 from Thread import *
 
 class Ui_Form(QtGui.QMainWindow):
@@ -72,6 +71,7 @@ class Ui_Form(QtGui.QMainWindow):
 				self.spinBox_2.setValue(self.pathIndex)	
 				
 	def _paths(self):
+		# print self.manga
 		path = os.getcwd() + "/" + self.manga + "/"
 		roots = []
 		for root, dirs, files in os.walk(path):
@@ -607,6 +607,8 @@ class Ui_Form(QtGui.QMainWindow):
 	
 	def createActions(self):
 
+		self.openAct = QtGui.QAction("&Open...", self, shortcut="Ctrl+O",triggered=self.open)
+
 		#Zoom
 		self.zoomInAct = QtGui.QAction("Zoom &In (25%)", self, shortcut="Ctrl+=", enabled=False, triggered=self.zoomIn)
 		self.zoomOutAct = QtGui.QAction("Zoom &Out (25%)", self,shortcut="Ctrl+-", enabled=False, triggered=self.zoomOut)
@@ -643,6 +645,8 @@ class Ui_Form(QtGui.QMainWindow):
 
 		#File Functions
 		self.fileMenu = QtGui.QMenu("&File", self)
+		self.fileMenu.addAction(self.openAct)
+
 		self.fileMenu.addAction(self.exitAct)
 
 		#View Functions
@@ -685,8 +689,54 @@ class Ui_Form(QtGui.QMainWindow):
 			
 	def Paint(self):
 		import myPaint
-		m = myPaint.MainWindow()
+		page = self.chapters[self.page];
+		m = myPaint.MainWindow(page)
 		m.show()
+
+
+	def open(self):
+		fileName = QtGui.QFileDialog.getExistingDirectory(self, "Open File")
+
+		# fileName = QtGui.QFileDialog.getOpenFileName(self, "Open File", QtCore.QDir.getExistingDirectory())
+		fileName = str(fileName)
+		
+		fileName = fileName.split('/')
+		self.manga = fileName[-1]
+		self.page = 0
+		self.pathIndex = 0
+		self.scaleFactor = 1.0
+		self.lightOn = False
+		self.increasePressed = True
+		self.decreasePressed = False
+		self.paths = self._paths()
+		self.flagChangeSpinBox = True
+
+		# self.spider = QtGui.QWidget()
+		print self.manga
+		self.updatePath()
+		self.chapters = self._images()
+
+		print self.chapters
+
+		self.imageLabel.setPixmap(QtGui.QPixmap(self.chapters[self.page]))
+		self.imageLabel.adjustSize()
+
+		self.thumb._update(self.path)
+		self.thumb._scroll(self.page)
+		self.thumb.item(self.page).setSelected(True)
+
+		# scale image
+		self.scaleImage(0.8)
+		self.scaleImage(0.8)
+
+		self.setSpinBoxMaximum()
+		if(len(self.paths) > 0):
+			self.spinBox_2.setMaximum(len(self.paths)-1)
+		else:
+			self.spinBox_2.setMaximum(0)
+
+
+
 		
 
 if __name__ == '__main__':

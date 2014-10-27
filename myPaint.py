@@ -12,7 +12,7 @@ from paint import paintArea
 
 class MainWindow(QtGui.QMainWindow):
 
-    def __init__(self):
+    def __init__(self, page):
     
         super(MainWindow, self).__init__()
 
@@ -73,12 +73,19 @@ class MainWindow(QtGui.QMainWindow):
         self.resize(self.paintArea.sizew, self.paintArea.sizeh+85)
         self.statusBar()
 
+        print page
+        page = (unicode(page, "UTF-8"), unicode(''))
+
+        self.paintArea.openImage(page)
+
+
     def open(self):
-        if self.maybeSave():
-            fileName = QtGui.QFileDialog.getOpenFileName(self, "Open File",
-                QtCore.QDir.currentPath())
-            if fileName:
-                self.paintArea.openImage(fileName)
+        # if self.maybeSave():
+        fileName = QtGui.QFileDialog.getOpenFileName(self, "Open File",
+            QtCore.QDir.currentPath())
+        if fileName:
+            print fileName
+            self.paintArea.openImage(fileName)
         
 
     def zoomIn(self):
