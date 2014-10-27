@@ -688,10 +688,12 @@ class Ui_Form(QtGui.QMainWindow):
         	"<p>The <b>MangaYou</b>")
 			
 	def Paint(self):
-		import myPaint
+		
 		page = self.chapters[self.page];
-		m = myPaint.MainWindow(page)
-		m.show()
+		self.threadP = ThreadP()
+		self.threadP.setPath(page)
+		self.threadP.start()
+
 
 
 	def open(self):

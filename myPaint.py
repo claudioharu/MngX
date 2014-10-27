@@ -73,10 +73,12 @@ class MainWindow(QtGui.QMainWindow):
         self.resize(self.paintArea.sizew, self.paintArea.sizeh+85)
         self.statusBar()
 
-        print page
+        # print page
         page = (unicode(page, "UTF-8"), unicode(''))
 
         self.paintArea.openImage(page)
+        
+        self.setWindowIcon(QtGui.QIcon("icons/mangaYouIcon.png"))
 
 
     def open(self):
@@ -192,7 +194,7 @@ class MainWindow(QtGui.QMainWindow):
                 
 def main():
     app = QtGui.QApplication(sys.argv)
-    ex = MainWindow()
+    ex = MainWindow(sys.argv[1])
     ex.showMaximized()
     sys.exit(app.exec_())
 

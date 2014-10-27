@@ -19,6 +19,25 @@ except ImportError:
 from itertools import islice
 
 
+
+class ThreadP(QtCore.QThread):
+    def __init__(self, parent=None):
+        super (ThreadP, self).__init__(parent)
+
+    def setPath(self,path):
+        print path
+        self.path = path      
+
+    def run(self):
+        import myPaint
+
+        os.system("python myPaint.py " + self.path) 
+        # self.myPaint = myPaint.MainWindow(self.path)
+        # self.myPaint.main()
+
+
+
+
 class Thread(QtCore.QThread):
 
     #This is the signal that will be emitted during the processing.
